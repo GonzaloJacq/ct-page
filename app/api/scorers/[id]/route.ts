@@ -1,6 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getScorerById, updateScorer, deleteScorer } from '@/lib/db/scorers';
-import { ApiResponse, Scorer, UpdateScorerInput } from '@/app/features/scorers/types';
+import { NextRequest, NextResponse } from "next/server";
+import { getScorerById, updateScorer, deleteScorer } from "@/lib/db/scorers";
+import {
+  ApiResponse,
+  Scorer,
+  UpdateScorerInput,
+} from "@/app/features/scorers/types";
 
 export async function GET(
   request: NextRequest,
@@ -8,11 +12,11 @@ export async function GET(
 ): Promise<NextResponse<ApiResponse<Scorer>>> {
   try {
     const { id } = await params;
-    const scorer = getScorerById(id);
+    const scorer = await getScorerById(id);
 
     if (!scorer) {
       return NextResponse.json(
-        { success: false, error: 'Registro de goles no encontrado' },
+        { success: false, error: "Registro de goles no encontrado" },
         { status: 404 }
       );
     }
@@ -23,7 +27,7 @@ export async function GET(
     });
   } catch {
     return NextResponse.json(
-      { success: false, error: 'Error al obtener registro de goles' },
+      { success: false, error: "Error al obtener registro de goles" },
       { status: 500 }
     );
   }
@@ -37,11 +41,11 @@ export async function PUT(
     const { id } = await params;
     const body = (await request.json()) as UpdateScorerInput;
 
-    const scorer = updateScorer(id, body);
+    const scorer = await updateScorer(id, body);
 
     if (!scorer) {
       return NextResponse.json(
-        { success: false, error: 'Registro de goles no encontrado' },
+        { success: false, error: "Registro de goles no encontrado" },
         { status: 404 }
       );
     }
@@ -52,7 +56,7 @@ export async function PUT(
     });
   } catch {
     return NextResponse.json(
-      { success: false, error: 'Error al actualizar registro de goles' },
+      { success: false, error: "Error al actualizar registro de goles" },
       { status: 500 }
     );
   }
@@ -64,11 +68,11 @@ export async function DELETE(
 ): Promise<NextResponse<ApiResponse<null>>> {
   try {
     const { id } = await params;
-    const deleted = deleteScorer(id);
+    const deleted = await deleteScorer(id);
 
     if (!deleted) {
       return NextResponse.json(
-        { success: false, error: 'Registro de goles no encontrado' },
+        { success: false, error: "Registro de goles no encontrado" },
         { status: 404 }
       );
     }
@@ -79,7 +83,7 @@ export async function DELETE(
     });
   } catch {
     return NextResponse.json(
-      { success: false, error: 'Error al eliminar registro de goles' },
+      { success: false, error: "Error al eliminar registro de goles" },
       { status: 500 }
     );
   }

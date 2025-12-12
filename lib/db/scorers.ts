@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Scorer, CreateScorerInput } from '@/app/features/scorers/types';
+import { Scorer, CreateScorerInput, UpdateScorerInput } from '@/app/features/scorers/types';
 
 const prisma = new PrismaClient();
 
@@ -26,6 +26,13 @@ export async function createScorer(input: CreateScorerInput): Promise<Scorer> {
       matchDate: input.matchDate,
       opponent: input.opponent,
     },
+  });
+}
+
+export async function updateScorer(id: string, input: UpdateScorerInput): Promise<Scorer> {
+  return await prisma.scorer.update({
+    where: { id },
+    data: input,
   });
 }
 
