@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// Player Model - Jugadores del equipo
+model Player {
+    id          String   @id @default(cuid())
+    name        String   @db.VarChar(255)
+    age         Int
+    phone       String   @db.VarChar(20)
+    shirtNumber Int      @unique
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    // Relations
+    fees    Fee[]
+    scorers Scorer[]
+
+    @@index([name])
+    @@map("players")
+}
+
+// Fee Model - Cuotas mensuales
+model Fee {
+    id         String    @id @default(cuid())
+    playerId   String
+    playerName String    @db.VarChar(255)
+    month      String    @db.VarChar(7) // "2025-12"
+    amount     Float
+    paid       Boolean   @default(false)
+    paidDate   DateTime?
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+
+    // Relations
+    player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+    @@unique([playerId, month])
+    @@index([playerId])
+    @@index([month])
+    @@map("fees")
+}
+
+// Match Model - Partidos jugados
+model Match {
+    id        String   @id @default(cuid())
+    date      DateTime
+    opponent  String   @db.VarChar(255)
+    result    String?  @db.VarChar(50)
+    playerIds String[] // Array de IDs de jugadores
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    scorers Scorer[]
+
+    @@index([date])
+    @@index([opponent])
+    @@map("matches")
+}
+
+// Scorer Model - Goles anotados
+model Scorer {
+    id         String   @id @default(cuid())
+    matchId    String
+    playerId   String
+    playerName String   @db.VarChar(255)
+    goalsCount Int      @default(1)
+    matchDate  DateTime
+    opponent   String   @db.VarChar(255)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    // Relations
+    match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+    player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+    @@unique([matchId, playerId])
+    @@index([matchId])
+    @@index([playerId])
+    @@index([goalsCount])
+    @@map("scorers")
+}

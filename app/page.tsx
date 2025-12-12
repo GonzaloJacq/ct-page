@@ -1,65 +1,152 @@
-import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="min-h-screen bg-gray-950">
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <div className="text-6xl mb-4">⚽</div>
+          <h1 className="text-5xl font-bold text-gray-100 mb-2">
+            CLAN TEAM FC
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl text-gray-400 mb-4">
+            Sistema de Gestión Integral del Equipo
+          </p>
+          <p className="text-sm text-gray-500">
+            Equipo de fútbol amateur de amigos
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
+          {/* Players Card */}
+          <Link
+            href="/features/players"
+            className="bg-linear-to-br from-blue-900 to-blue-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-blue-700"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div className="text-5xl mb-4">👥</div>
+            <h2 className="text-2xl font-bold text-blue-100 mb-2">
+              Gestión de Jugadores
+            </h2>
+            <p className="text-blue-300 mb-4">
+              Administra el registro de jugadores, edades, teléfonos y números de camiseta
+            </p>
+            <span className="text-blue-400 font-semibold text-sm">Ir a Jugadores →</span>
+          </Link>
+
+          {/* Fees Card */}
+          <Link
+            href="/features/fees"
+            className="bg-linear-to-br from-green-900 to-green-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-green-700"
           >
-            Documentation
-          </a>
+            <div className="text-5xl mb-4">💰</div>
+            <h2 className="text-2xl font-bold text-green-100 mb-2">
+              Gestión de Cuotas
+            </h2>
+            <p className="text-green-300 mb-4">
+              Controla el pago de cuotas mensuales de los jugadores
+            </p>
+            <span className="text-green-400 font-semibold text-sm">Ir a Cuotas →</span>
+          </Link>
+
+          {/* Matches Card */}
+          <Link
+            href="/features/matches"
+            className="bg-linear-to-br from-purple-900 to-purple-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-purple-700"
+          >
+            <div className="text-5xl mb-4">🏆</div>
+            <h2 className="text-2xl font-bold text-purple-100 mb-2">
+              Historial de Partidos
+            </h2>
+            <p className="text-purple-300 mb-4">
+              Registra partidos, rivales, jugadores participantes y resultados
+            </p>
+            <span className="text-purple-400 font-semibold text-sm">Ir a Partidos →</span>
+          </Link>
+
+          {/* Scorers Card */}
+          <Link
+            href="/features/scorers"
+            className="bg-linear-to-br from-orange-900 to-orange-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-orange-700"
+          >
+            <div className="text-5xl mb-4">⚡</div>
+            <h2 className="text-2xl font-bold text-orange-100 mb-2">
+              Top Goleadores
+            </h2>
+            <p className="text-orange-300 mb-4">
+              Estadísticas de goles por jugador y partido
+            </p>
+            <span className="text-orange-400 font-semibold text-sm">Ir a Goleadores →</span>
+          </Link>
         </div>
-      </main>
+
+        {/* Info Section */}
+        <div className="bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-700">
+          <h3 className="text-2xl font-bold text-gray-100 mb-6">
+            Características del Sistema
+          </h3>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <span className="text-blue-400 text-xl">✓</span>
+                <div>
+                  <h4 className="font-semibold text-gray-100">Gestión Completa de Jugadores</h4>
+                  <p className="text-gray-400 text-sm">Registro detallado con datos de contacto</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <span className="text-green-400 text-xl">✓</span>
+                <div>
+                  <h4 className="font-semibold text-gray-100">Control de Cuotas</h4>
+                  <p className="text-gray-400 text-sm">Seguimiento de pagos mensuales</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <span className="text-purple-400 text-xl">✓</span>
+                <div>
+                  <h4 className="font-semibold text-gray-100">Historial de Partidos</h4>
+                  <p className="text-gray-400 text-sm">Registro de enfrentamientos y resultados</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <span className="text-orange-400 text-xl">✓</span>
+                <div>
+                  <h4 className="font-semibold text-gray-100">Estadísticas de Goles</h4>
+                  <p className="text-gray-400 text-sm">Top goleadores ordenados por desempeño</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <span className="text-blue-400 text-xl">✓</span>
+                <div>
+                  <h4 className="font-semibold text-gray-100">Interfaz Intuitiva</h4>
+                  <p className="text-gray-400 text-sm">Diseño minimalista en modo oscuro</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <span className="text-green-400 text-xl">✓</span>
+                <div>
+                  <h4 className="font-semibold text-gray-100">Operaciones CRUD</h4>
+                  <p className="text-gray-400 text-sm">Crear, leer, actualizar y eliminar datos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-12 text-center text-gray-500 text-sm">
+          <p>CLAN TEAM FC © 2025 - Sistema de Gestión de Equipos de Fútbol Amateur</p>
+        </div>
+      </div>
     </div>
   );
 }
