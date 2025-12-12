@@ -4,7 +4,7 @@ import { ApiResponse, Scorer, CreateScorerInput } from '@/app/features/scorers/t
 
 export async function GET(): Promise<NextResponse<ApiResponse<Scorer[]>>> {
   try {
-    const scorers = getScorers();
+    const scorers = await getScorers();
     return NextResponse.json({
       success: true,
       data: scorers,
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       );
     }
 
-    const scorer = createScorer(body);
+    const scorer = await createScorer(body);
     return NextResponse.json(
       { success: true, data: scorer },
       { status: 201 }
