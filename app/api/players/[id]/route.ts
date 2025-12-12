@@ -8,7 +8,7 @@ export async function GET(
 ): Promise<NextResponse<ApiResponse<Player>>> {
   try {
     const { id } = await params;
-    const player = getPlayerById(id);
+    const player = await getPlayerById(id);
 
     if (!player) {
       return NextResponse.json(
@@ -48,7 +48,7 @@ export async function PUT(
       );
     }
 
-    const player = updatePlayer(id, body);
+    const player = await updatePlayer(id, body);
 
     if (!player) {
       return NextResponse.json(
@@ -72,7 +72,7 @@ export async function DELETE(
 ): Promise<NextResponse<ApiResponse<null>>> {
   try {
     const { id } = await params;
-    const success = deletePlayer(id);
+    const success = await deletePlayer(id);
 
     if (!success) {
       return NextResponse.json(

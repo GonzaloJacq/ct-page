@@ -4,7 +4,7 @@ import { ApiResponse, Player, CreatePlayerInput } from '@/app/features/players/t
 
 export async function GET(): Promise<NextResponse<ApiResponse<Player[]>>> {
   try {
-    const players = getPlayers();
+    const players = await getPlayers();
     return NextResponse.json({
       success: true,
       data: players,
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       );
     }
 
-    const player = createPlayer(body);
+    const player = await createPlayer(body);
     return NextResponse.json(
       { success: true, data: player },
       { status: 201 }

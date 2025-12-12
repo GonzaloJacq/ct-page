@@ -4,7 +4,7 @@ import { ApiResponse, Match, CreateMatchInput } from '@/app/features/matches/typ
 
 export async function GET(): Promise<NextResponse<ApiResponse<Match[]>>> {
   try {
-    const matches = getMatches();
+    const matches = await getMatches();
     return NextResponse.json({
       success: true,
       data: matches,
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       );
     }
 
-    const match = createMatch(body);
+    const match = await createMatch(body);
     return NextResponse.json(
       { success: true, data: match },
       { status: 201 }

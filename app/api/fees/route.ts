@@ -4,7 +4,7 @@ import { ApiResponse, Fee, CreateFeeInput } from '@/app/features/fees/types';
 
 export async function GET(): Promise<NextResponse<ApiResponse<Fee[]>>> {
   try {
-    const fees = getFees();
+    const fees = await getFees();
     return NextResponse.json({ success: true, data: fees });
   } catch {
     return NextResponse.json(
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       );
     }
 
-    const fee = createFee(body);
+    const fee = await createFee(body);
     return NextResponse.json(
       { success: true, data: fee },
       { status: 201 }

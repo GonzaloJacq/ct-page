@@ -8,7 +8,7 @@ export async function GET(
 ): Promise<NextResponse<ApiResponse<Fee>>> {
   try {
     const { id } = await params;
-    const fee = getFeeById(id);
+    const fee = await getFeeById(id);
     if (!fee) {
       return NextResponse.json(
         { success: false, error: 'Cuota no encontrada' },
@@ -32,7 +32,7 @@ export async function PUT(
     const { id } = await params;
     const body = (await request.json()) as UpdateFeeInput;
 
-    const fee = updateFee(id, body);
+    const fee = await updateFee(id, body);
     if (!fee) {
       return NextResponse.json(
         { success: false, error: 'Cuota no encontrada' },
@@ -55,7 +55,7 @@ export async function DELETE(
 ): Promise<NextResponse<ApiResponse<null>>> {
   try {
     const { id } = await params;
-    const success = deleteFee(id);
+    const success = await deleteFee(id);
     if (!success) {
       return NextResponse.json(
         { success: false, error: 'Cuota no encontrada' },

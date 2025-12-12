@@ -1,52 +1,48 @@
+import { PrismaClient } from '@prisma/client';
 import { Match, CreateMatchInput, UpdateMatchInput } from '@/app/features/matches/types';
 
-const matches: Map<string, Match> = new Map();
-let matchCounter = 1;
+const prisma = new PrismaClient();
 
-export const getMatches = (): Match[] => {
-  return Array.from(matches.values());
-};
+export async function getMatches(): Promise<Match[]> {
+  const matches = await prisma.match.findMany({
+    orderBy: { date: 'desc' },
+  });
+  return matches;
+}
 
-export const getMatchById = (id: string): Match | null => {
-  return matches.get(id) || null;
-};
+export async function getMatchById(id: string): Promise<Match | null> {
+  return await prisma.match.findUnique({
+    where: { id },
+  });
+}
 
-export const createMatch = (input: CreateMatchInput): Match => {
-  const id = matchCounter.toString();
-  matchCounter++;
+export async function createMatch(input: CreateMatchInput): Promise<Match> {
+  return await prisma.match.create({
+    data: {
+      date: input.date,
+      opponent: input.opponent,
+      playerIds: Array.from(input.playerIds),
+      result: input.result ?? null,
+    },
+  });
+}
 
-  const match: Match = {
-    id,
-    date: input.date,
-    opponent: input.opponent,
-    playerIds: input.playerIds,
-    result: input.result ?? null,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+export async function updateMatch(id: string, input: UpdateMatchInput): Promise<Match> {
+  const data: Record<string, unknown> = {};
 
-  matches.set(id, match);
-  return match;
-};
+  if (input.date !== undefined) data.date = input.date;
+  if (input.opponent !== undefined) data.opponent = input.opponent;
+  if (input.playerIds !== undefined) data.playerIds = Array.from(input.playerIds);
+  if ('result' in input) data.result = input.result ?? null;
 
-export const updateMatch = (id: string, input: UpdateMatchInput): Match | null => {
-  const match = matches.get(id);
+  return await prisma.match.update({
+    where: { id },
+    data,
+  });
+}
 
-  if (!match) {
-    return null;
-  }
-
-  const updated: Match = {
-    ...match,
-    ...input,
-    result: 'result' in input ? (input.result ?? null) : match.result,
-    updatedAt: new Date(),
-  };
-
-  matches.set(id, updated);
-  return updated;
-};
-
-export const deleteMatch = (id: string): boolean => {
-  return matches.delete(id);
-};
+export async function deleteMatch(id: string): Promise<Match> {
+  return await prisma.match.delete({
+    where: { id },
+  });
+}

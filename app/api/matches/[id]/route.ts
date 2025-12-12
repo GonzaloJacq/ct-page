@@ -8,7 +8,7 @@ export async function GET(
 ): Promise<NextResponse<ApiResponse<Match>>> {
   try {
     const { id } = await params;
-    const match = getMatchById(id);
+    const match = await getMatchById(id);
 
     if (!match) {
       return NextResponse.json(
@@ -37,7 +37,7 @@ export async function PUT(
     const { id } = await params;
     const body = (await request.json()) as UpdateMatchInput;
 
-    const match = updateMatch(id, body);
+    const match = await updateMatch(id, body);
 
     if (!match) {
       return NextResponse.json(
