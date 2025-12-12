@@ -50,7 +50,7 @@ export default function ScorerList({ scorers, isLoading = false }: ScorerListPro
         </thead>
         <tbody>
           {sortedScorers.map((scorer, index) => (
-            <tr key={scorer.id} className="border-b border-gray-700 hover:bg-gray-750 transition">
+            <tr  key={scorer.id ?? `${scorer.playerId}-${index}`} className="border-b border-gray-700 hover:bg-gray-750 transition">
               <td className="px-4 py-3 text-sm text-gray-100 font-semibold">
                 #{index + 1}
               </td>
