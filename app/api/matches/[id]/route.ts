@@ -64,7 +64,7 @@ export async function DELETE(
 ): Promise<NextResponse<ApiResponse<null>>> {
   try {
     const { id } = await params;
-    const deleted = deleteMatch(id);
+    const deleted = await deleteMatch(id);
 
     if (!deleted) {
       return NextResponse.json(

@@ -1,12 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePlayer } from './hooks/usePlayer';
-import { PlayerForm, PlayerList } from './components';
-import { Player, CreatePlayerInput } from './types';
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePlayer } from "./hooks/usePlayer";
+import { PlayerForm, PlayerList } from "./components";
+import { Player, CreatePlayerInput } from "./types";
 
 export default function PlayersPage() {
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user;
   const {
     players,
     loading,
@@ -51,7 +54,7 @@ export default function PlayersPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('¿Estás seguro de que deseas eliminar este jugador?')) {
+    if (confirm("¿Estás seguro de que deseas eliminar este jugador?")) {
       await deletePlayer(id);
     }
   };
@@ -61,10 +64,14 @@ export default function PlayersPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <Link href="/" className="flex items-center gap-3 group">
-            <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">←</span>
-            <h1 className="text-4xl font-bold text-gray-100">Gestión de Jugadores</h1>
+            <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">
+              ←
+            </span>
+            <h1 className="text-4xl font-bold text-gray-100">
+              Gestión de Jugadores
+            </h1>
           </Link>
-          {!showForm && (
+          {isAuthenticated && !showForm && (
             <button
               onClick={() => {
                 setEditingPlayer(null);
@@ -86,7 +93,7 @@ export default function PlayersPage() {
         {showForm && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-100 mb-4">
-              {editingPlayer ? 'Editar Jugador' : 'Nuevo Jugador'}
+              {editingPlayer ? "Editar Jugador" : "Nuevo Jugador"}
             </h2>
             <PlayerForm
               onSubmit={handleSubmit}
@@ -109,6 +116,7 @@ export default function PlayersPage() {
               onEdit={handleEdit}
               onDelete={handleDelete}
               isLoading={loading}
+              isAuthenticated={isAuthenticated}
             />
           )}
         </div>

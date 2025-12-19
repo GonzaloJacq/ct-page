@@ -34,3 +34,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Notes
+
+- Environment: Ensure `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, and `DATABASE_URL` are set in your environment. If you see JWT/session decryption errors, verify `NEXTAUTH_SECRET` and clear your browser cookies.
+- Optional: SweetAlert2 is used for prettier registration alerts. Install with `npm install sweetalert2` to enable it.

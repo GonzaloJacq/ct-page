@@ -10,6 +10,19 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+// User Model - Gestión de usuarios
+model User {
+    id        String   @id @default(cuid())
+    email     String   @unique @db.VarChar(255)
+    password  String   @db.VarChar(255)
+    name      String   @db.VarChar(255)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([email])
+    @@map("users")
+}
+
 // Player Model - Jugadores del equipo
 model Player {
     id          String   @id @default(cuid())

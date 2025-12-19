@@ -7,6 +7,7 @@ interface MatchListProps {
   readonly onEdit: (match: Match) => void;
   readonly onDelete: (id: string) => void;
   readonly isLoading?: boolean;
+  readonly isAuthenticated?: boolean;
 }
 
 export default function MatchList({
@@ -14,6 +15,7 @@ export default function MatchList({
   onEdit,
   onDelete,
   isLoading = false,
+  isAuthenticated = false,
 }: MatchListProps) {
   if (isLoading) {
     return (
@@ -48,9 +50,11 @@ export default function MatchList({
             <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
               Resultado
             </th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-100 border-b border-gray-700">
-              Acciones
-            </th>
+            {isAuthenticated && (
+              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-100 border-b border-gray-700">
+                Acciones
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -66,20 +70,22 @@ export default function MatchList({
               <td className="px-4 py-3 text-sm text-gray-100">
                 {match.result || '-'}
               </td>
-              <td className="px-4 py-3 text-center">
-                <button
-                  onClick={() => onEdit(match)}
-                  className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition mr-2"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => onDelete(match.id)}
-                  className="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition"
-                >
-                  Eliminar
-                </button>
-              </td>
+              {isAuthenticated && (
+                <td className="px-4 py-3 text-center">
+                  <button
+                    onClick={() => onEdit(match)}
+                    className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition mr-2"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => onDelete(match.id)}
+                    className="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

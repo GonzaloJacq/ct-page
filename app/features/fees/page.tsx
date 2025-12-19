@@ -1,14 +1,19 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useFees } from './hooks/useFees';
-import { usePlayer } from '@/app/features/players/hooks/usePlayer';
-import { FeeForm, FeeList } from './components';
-import { Fee, CreateFeeInput } from './types';
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useFees } from "./hooks/useFees";
+import { usePlayer } from "@/app/features/players/hooks/usePlayer";
+import { FeeForm, FeeList } from "./components";
+import { Fee, CreateFeeInput } from "./types";
+
 
 export default function FeesPage() {
-  const { fees, loading, error, fetchFees, createFee, updateFee, deleteFee } = useFees();
+  const { data: session } = useSession();
+  const isAuthenticated = !!session?.user;
+  const { fees, loading, error, fetchFees, createFee, updateFee, deleteFee } =
+    useFees();
   const { players, fetchPlayers } = usePlayer();
   const [showForm, setShowForm] = useState(false);
   const [editingFee, setEditingFee] = useState<Fee | null>(null);
@@ -45,7 +50,7 @@ export default function FeesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('¿Eliminar esta cuota?')) {
+    if (confirm("¿Eliminar esta cuota?")) {
       await deleteFee(id);
     }
   };
@@ -55,10 +60,14 @@ export default function FeesPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <Link href="/" className="flex items-center gap-3 group">
-            <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">←</span>
-            <h1 className="text-4xl font-bold text-gray-100">Gestión de Cuotas</h1>
+            <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">
+              ←
+            </span>
+            <h1 className="text-4xl font-bold text-gray-100">
+              Gestión de Cuotas
+            </h1>
           </Link>
-          {!showForm && (
+          {isAuthenticated && !showForm && (
             <button
               onClick={() => {
                 setEditingFee(null);
@@ -80,7 +89,7 @@ export default function FeesPage() {
         {showForm && (
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-100 mb-4">
-              {editingFee ? 'Editar Cuota' : 'Nueva Cuota'}
+              {editingFee ? "Editar Cuota" : "Nueva Cuota"}
             </h2>
             <FeeForm
               onSubmit={handleSubmit}
@@ -104,6 +113,7 @@ export default function FeesPage() {
               onEdit={handleEdit}
               onDelete={handleDelete}
               isLoading={loading}
+              isAuthenticated={isAuthenticated}
             />
           )}
         </div>

@@ -7,6 +7,7 @@ interface PlayerListProps {
   onEdit: (player: Player) => void;
   onDelete: (id: string) => void;
   isLoading?: boolean;
+  isAuthenticated?: boolean;
 }
 
 export default function PlayerList({
@@ -14,6 +15,7 @@ export default function PlayerList({
   onEdit,
   onDelete,
   isLoading = false,
+  isAuthenticated = false,
 }: PlayerListProps) {
   if (players.length === 0) {
     return (
@@ -40,9 +42,11 @@ export default function PlayerList({
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
               Camiseta
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
-              Acciones
-            </th>
+            {isAuthenticated && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+                Acciones
+              </th>
+            )}
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-700">
@@ -60,22 +64,24 @@ export default function PlayerList({
               <td className="px-6 py-4 text-sm text-gray-300">
                 #{player.shirtNumber}
               </td>
-              <td className="px-6 py-4 text-sm font-medium space-x-2">
-                <button
-                  onClick={() => onEdit(player)}
-                  disabled={isLoading}
-                  className="text-blue-400 hover:text-blue-300 disabled:text-gray-600 transition"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => onDelete(player.id)}
-                  disabled={isLoading}
-                  className="text-red-400 hover:text-red-300 disabled:text-gray-600 transition"
-                >
-                  Eliminar
-                </button>
-              </td>
+              {isAuthenticated && (
+                <td className="px-6 py-4 text-sm font-medium space-x-2">
+                  <button
+                    onClick={() => onEdit(player)}
+                    disabled={isLoading}
+                    className="text-blue-400 hover:text-blue-300 disabled:text-gray-600 transition"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => onDelete(player.id)}
+                    disabled={isLoading}
+                    className="text-red-400 hover:text-red-300 disabled:text-gray-600 transition"
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
