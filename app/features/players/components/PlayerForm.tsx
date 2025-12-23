@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Player, CreatePlayerInput } from '../types';
 
 interface PlayerFormProps {
@@ -26,6 +26,20 @@ export default function PlayerForm({
         }
       : { name: '', age: 0, phone: '', shirtNumber: 0 }
   );
+
+  // Sync form data when initialData changes (e.g. switching between players)
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        name: initialData.name,
+        age: initialData.age,
+        phone: initialData.phone,
+        shirtNumber: initialData.shirtNumber,
+      });
+    } else {
+      setFormData({ name: '', age: 0, phone: '', shirtNumber: 0 });
+    }
+  }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

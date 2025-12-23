@@ -1,54 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getToken } from 'next-auth/jwt';
-import { headers, cookies } from 'next/headers';
-import type { IncomingMessage } from 'http';
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/auth";
 
 export default async function Home() {
-  if (!process.env.NEXTAUTH_SECRET) {
-    console.warn('NEXTAUTH_SECRET is not set — set it to avoid JWT decryption errors; continuing without redirect.');
-  }
+  // En Vercel/Producción, getServerSession maneja correctamente las cookies seguras y la sesión
+  const session = await getServerSession(authOptions);
 
-  try {
-    // Only validate token if NEXTAUTH_SECRET is set (required for JWT decryption)
-    // If not set, skip validation and render the page (session will come from client-side SessionProvider)
-    if (process.env.NEXTAUTH_SECRET) {
-      const h = await headers();
-      const c = await cookies();
-
-      const headerEntries = Array.from(h as unknown as Iterable<[string, string]>);
-      const cookieEntries = c.getAll().map(item => [item.name, item.value]);
-
-      const reqLike: { headers: Record<string, string>; cookies: Record<string, string> } = {
-        headers: Object.fromEntries(headerEntries),
-        cookies: Object.fromEntries(cookieEntries),
-      };
-
-      let token = null as null | Record<string, unknown>;
-      try {
-        token = await getToken({ req: reqLike as unknown as IncomingMessage & { cookies: Record<string, string> }, secret: process.env.NEXTAUTH_SECRET });
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : String(err || '');
-        const isDecryptionError = msg.includes('decryption operation failed') || msg.includes('JWEDecryptionFailed') || msg.includes('JWT_SESSION_ERROR');
-        if (isDecryptionError) {
-          console.warn('Invalid auth cookie detected in Home — redirecting to login and avoiding getServerSession call.');
-          redirect('/auth/login');
-        }
-      }
-
-      if (!token) {
-        redirect('/auth/login');
-      }
-    }
-    // If NEXTAUTH_SECRET is not set, skip token validation and render the page
-    // The session will be provided by SessionProvider on the client side
-  } catch (err: unknown) {
-    // Rethrow Next.js redirect to avoid logging it as an error.
-    if (err instanceof Error && err.message === 'NEXT_REDIRECT') throw err;
-    console.warn('Error while validating token for session:', err);
+  if (process.env.NEXTAUTH_SECRET && !session) {
     redirect('/auth/login');
   }
+
 
   // Render the page - Header will show user info if authenticated via SessionProvider
 
