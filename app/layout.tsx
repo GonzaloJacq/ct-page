@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "./components/SessionWrapper";
-import { Navbar } from "./components/Navbar";
 import type { Session } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
 import { cookies, headers } from 'next/headers';
@@ -89,7 +88,6 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <SessionWrapper session={session}>
-          <Navbar />
           {children}
         </SessionWrapper>
       </body>

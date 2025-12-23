@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
-
 import { Player } from "../players/types";
 import { Formation, FormationData, ApiResponse } from "./types";
 import { FormationBuilder } from "./components/FormationBuilder";
@@ -113,59 +111,56 @@ export default function FormationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <Link href="/" className="flex items-center gap-3 group">
-            <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">
-              ←
-            </span>
-            <h1 className="text-4xl font-bold text-gray-100">
-              Armador de Formaciones
-            </h1>
-          </Link>
-          {isAuthenticated && !showBuilder && (
-            <button
-              onClick={() => {
-                setSelectedFormation(null);
-                setShowBuilder(true);
-                setError(null);
-              }}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-            >
-              + Nueva Formación
-            </button>
-          )}
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-display text-white">
+            ARMADOR TÁCTICO
+          </h1>
+          <p className="text-slate-400 text-sm mt-1">Diseña y guarda las estrategias de juego</p>
         </div>
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-900 border border-red-700 text-red-100 rounded">
-            {error}
-          </div>
-        )}
-
-        {showBuilder ? (
-          <FormationBuilder
-            players={players}
-            initialFormation={selectedFormation}
-            onSave={handleSaveFormation}
-            onCancel={() => {
-              setShowBuilder(false);
+        
+        {isAuthenticated && !showBuilder && (
+          <button
+            onClick={() => {
               setSelectedFormation(null);
+              setShowBuilder(true);
               setError(null);
             }}
-          />
-        ) : (
-          <FormationsList
-            formations={formations}
-            players={players}
-            loading={loading}
-            isAuthenticated={isAuthenticated}
-            onEdit={handleEditFormation}
-            onDelete={handleDeleteFormation}
-          />
+            className="btn-primary flex items-center gap-2"
+          >
+            + Nueva Formación
+          </button>
         )}
       </div>
+
+      {error && (
+        <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-200 rounded-lg">
+          {error}
+        </div>
+      )}
+
+      {showBuilder ? (
+        <FormationBuilder
+          players={players}
+          initialFormation={selectedFormation}
+          onSave={handleSaveFormation}
+          onCancel={() => {
+            setShowBuilder(false);
+            setSelectedFormation(null);
+            setError(null);
+          }}
+        />
+      ) : (
+        <FormationsList
+          formations={formations}
+          players={players}
+          loading={loading}
+          isAuthenticated={isAuthenticated}
+          onEdit={handleEditFormation}
+          onDelete={handleDeleteFormation}
+        />
+      )}
     </div>
   );
 }

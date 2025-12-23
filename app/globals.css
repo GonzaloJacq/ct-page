@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
+@import "tailwindcss";
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core Colors - Football Club Theme (Dark Navy & Gold) */
+  --background: #0f172a; /* Slate 900 - Deep Navy */
+  --surface: #1e293b;    /* Slate 800 - Lighter Navy for cards */
+  --surface-hover: #334155; /* Slate 700 */
+  
+  --foreground: #f8fafc; /* Slate 50 - Almost White text */
+  --foreground-muted: #94a3b8; /* Slate 400 - Muted text */
+  
+  --primary: #3b82f6;    /* Blue 500 - Primary Action */
+  --primary-foreground: #ffffff;
+  
+  --accent: #fbbf24;     /* Amber 400 - Gold Accent */
+  --accent-foreground: #1e293b;
+  
+  --border: #334155;     /* Slate 700 - Subtle borders */
+  
+  /* Status Colors */
+  --success: #10b981;    /* Emerald 500 */
+  --error: #ef4444;      /* Red 500 */
+  --warning: #f59e0b;    /* Amber 500 */
+  
+  /* Spacing & Radius */
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-muted: var(--foreground-muted);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-border: var(--border);
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Oswald', 'Inter', system-ui, sans-serif; /* Sporty headers */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Base Resets */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display, var(--font-sans));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+/* Utility Components */
+@layer components {
+  .dashboard-card {
+    @apply bg-surface border border-border rounded-xl p-6 transition-all duration-200;
+  }
+  
+  .dashboard-card:hover {
+    @apply border-gray-600 shadow-lg;
+    transform: translateY(-2px);
+  }
+
+  .glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg font-medium transition hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-surface border border-border text-foreground px-4 py-2 rounded-lg font-medium transition hover:bg-surface-hover hover:text-white;
+  }
+
+  .input-field {
+    @apply bg-surface border border-border rounded-lg px-4 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition w-full;
+  }
 }

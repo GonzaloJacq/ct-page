@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { usePlayer } from "./hooks/usePlayer";
 import { PlayerForm, PlayerList } from "./components";
 import { Player, CreatePlayerInput } from "./types";
@@ -60,66 +59,67 @@ export default function PlayersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <Link href="/" className="flex items-center gap-3 group">
-            <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">
-              ←
-            </span>
-            <h1 className="text-4xl font-bold text-gray-100">
-              Gestión de Jugadores
-            </h1>
-          </Link>
-          {isAuthenticated && !showForm && (
-            <button
-              onClick={() => {
-                setEditingPlayer(null);
-                setShowForm(true);
-              }}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-            >
-              + Nuevo Jugador
-            </button>
-          )}
-        </div>
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-900 border border-red-700 text-red-100 rounded">
-            {error}
-          </div>
-        )}
-
-        {showForm && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-100 mb-4">
-              {editingPlayer ? "Editar Jugador" : "Nuevo Jugador"}
-            </h2>
-            <PlayerForm
-              onSubmit={handleSubmit}
-              initialData={editingPlayer}
-              isLoading={formLoading}
-              onCancel={handleCancel}
-            />
-          </div>
-        )}
-
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-100 mb-4">Jugadores</h2>
-          {loading && !showForm ? (
-            <div className="text-center py-8">
-              <p className="text-gray-400">Cargando...</p>
-            </div>
-          ) : (
-            <PlayerList
-              players={players}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              isLoading={loading}
-              isAuthenticated={isAuthenticated}
-            />
-          )}
+          <h1 className="text-3xl font-display text-white">
+            GESTIÓN DE JUGADORES
+          </h1>
+          <p className="text-slate-400 text-sm mt-1">Administra la plantilla del equipo</p>
         </div>
+        
+        {isAuthenticated && !showForm && (
+          <button
+            onClick={() => {
+              setEditingPlayer(null);
+              setShowForm(true);
+            }}
+            className="btn-primary flex items-center gap-2"
+          >
+            <span>+ Nuevo Jugador</span>
+          </button>
+        )}
+      </div>
+
+      {error && (
+        <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-200 rounded-lg">
+          {error}
+        </div>
+      )}
+
+      {showForm && (
+        <div className="dashboard-card mb-8">
+          <h2 className="text-xl font-bold text-white mb-4">
+            {editingPlayer ? "Editar Jugador" : "Nuevo Jugador"}
+          </h2>
+          <PlayerForm
+            onSubmit={handleSubmit}
+            initialData={editingPlayer}
+            isLoading={formLoading}
+            onCancel={handleCancel}
+          />
+        </div>
+      )}
+
+      <div>
+        {!showForm && (
+          <>
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                <p className="text-slate-400 mt-4">Cargando...</p>
+              </div>
+            ) : (
+              <PlayerList
+                players={players}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                isLoading={loading}
+                isAuthenticated={isAuthenticated}
+              />
+            )}
+          </>
+        )}
       </div>
     </div>
   );
