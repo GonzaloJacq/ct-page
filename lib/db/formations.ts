@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import {
   Formation,
   FormationData,
+  CreateFormationInput,
   UpdateFormationInput,
 } from "@/app/features/formations/types";
 
@@ -17,7 +18,7 @@ export async function getFormations(): Promise<Formation[]> {
 
   return formations.map((formation) => ({
     ...formation,
-    formationData: formation.formationData as FormationData,
+    formationData: formation.formationData as unknown as FormationData,
   }));
 }
 
@@ -33,7 +34,7 @@ export async function getFormationById(id: string): Promise<Formation | null> {
 
   return {
     ...formation,
-    formationData: formation.formationData as FormationData,
+    formationData: formation.formationData as unknown as FormationData,
   };
 }
 
@@ -52,7 +53,7 @@ export async function createFormation(
 
   return {
     ...formation,
-    formationData: formation.formationData as FormationData,
+    formationData: formation.formationData as unknown as FormationData,
   };
 }
 
@@ -74,7 +75,7 @@ export async function updateFormation(
 
     return {
       ...formation,
-      formationData: formation.formationData as FormationData,
+      formationData: formation.formationData as unknown as FormationData,
     };
   } catch (error: any) {
     if (error.code === "P2025") {
