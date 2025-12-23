@@ -58,7 +58,9 @@ export default async function Home() {
       <div className="max-w-6xl mx-auto px-4 py-16">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="text-6xl mb-4">⚽</div>
+          <div className="mb-6 flex justify-center">
+            <img src="/logo-ct.png" alt="Clan Team FC Logo" className="w-32 h-32 object-contain drop-shadow-2xl" />
+          </div>
           <h1 className="text-5xl font-bold text-gray-100 mb-2">
             CLAN TEAM FC
           </h1>
@@ -75,7 +77,7 @@ export default async function Home() {
           {/* Players Card */}
           <Link
             href="/features/players"
-            className="bg-linear-to-br from-blue-900 to-blue-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-blue-700"
+            className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-blue-700"
           >
             <div className="text-5xl mb-4">👥</div>
             <h2 className="text-2xl font-bold text-blue-100 mb-2">
@@ -90,7 +92,7 @@ export default async function Home() {
           {/* Fees Card */}
           <Link
             href="/features/fees"
-            className="bg-linear-to-br from-green-900 to-green-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-green-700"
+            className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-green-700"
           >
             <div className="text-5xl mb-4">💰</div>
             <h2 className="text-2xl font-bold text-green-100 mb-2">
@@ -105,7 +107,7 @@ export default async function Home() {
           {/* Matches Card */}
           <Link
             href="/features/matches"
-            className="bg-linear-to-br from-purple-900 to-purple-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-purple-700"
+            className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-purple-700"
           >
             <div className="text-5xl mb-4">🏆</div>
             <h2 className="text-2xl font-bold text-purple-100 mb-2">
@@ -120,7 +122,7 @@ export default async function Home() {
           {/* Scorers Card */}
           <Link
             href="/features/scorers"
-            className="bg-linear-to-br from-orange-900 to-orange-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-orange-700"
+            className="bg-gradient-to-br from-orange-900 to-orange-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-orange-700"
           >
             <div className="text-5xl mb-4">⚡</div>
             <h2 className="text-2xl font-bold text-orange-100 mb-2">
@@ -130,6 +132,21 @@ export default async function Home() {
               Estadísticas de goles por jugador y partido
             </p>
             <span className="text-orange-400 font-semibold text-sm">Ir a Goleadores →</span>
+          </Link>
+
+          {/* Formations Card */}
+          <Link
+            href="/features/formations"
+            className="bg-gradient-to-br from-teal-900 to-teal-800 rounded-lg shadow-xl p-8 hover:shadow-2xl transition transform hover:scale-105 border border-teal-700"
+          >
+            <div className="text-5xl mb-4">⚽</div>
+            <h2 className="text-2xl font-bold text-teal-100 mb-2">
+              Armador de Formaciones
+            </h2>
+            <p className="text-teal-300 mb-4">
+              Crea y gestiona formaciones tácticas con posicionamiento visual de jugadores
+            </p>
+            <span className="text-teal-400 font-semibold text-sm">Ir a Formaciones →</span>
           </Link>
         </div>
 

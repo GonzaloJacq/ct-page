@@ -14,9 +14,7 @@ export const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo/Home */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">CT</span>
-            </div>
+            <img src="/logo-ct.png" alt="CT Logo" className="w-10 h-10 object-contain" />
             <span className="text-white font-bold hidden sm:inline">CLAN TEAM FC</span>
           </Link>
 
@@ -36,6 +34,9 @@ export const Navbar = () => {
             </Link>
             <Link href="/features/scorers" className="text-gray-300 hover:text-white transition">
               Goleadores
+            </Link>
+            <Link href="/features/formations" className="text-gray-300 hover:text-white transition">
+              Formaciones
             </Link>
           </div>
 
@@ -114,6 +115,12 @@ export const Navbar = () => {
               className="block px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition"
             >
               Goleadores
+            </Link>
+            <Link
+              href="/features/formations"
+              className="block px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition"
+            >
+              Formaciones
             </Link>
           </div>
         )}

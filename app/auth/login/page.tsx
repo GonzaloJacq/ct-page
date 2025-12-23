@@ -53,6 +53,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="bg-gray-900 rounded-lg border border-gray-700 p-8">
+          <div className="flex justify-center mb-6">
+            <img src="/logo-ct.png" alt="Clan Team FC Logo" className="w-24 h-24 object-contain" />
+          </div>
           <h1 className="text-2xl font-bold text-gray-100 text-center mb-8">
             CLAN TEAM FC
           </h1>

@@ -102,3 +102,16 @@ model Scorer {
     @@index([goalsCount])
     @@map("scorers")
 }
+
+
+// Formation Model - Formaciones tácticas
+model Formation {
+    id            String   @id @default(cuid())
+    name          String   @db.VarChar(100)
+    formationData Json     // {playerId: {x: number, y: number}}
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    @@index([createdAt])
+    @@map("formations")
+}
