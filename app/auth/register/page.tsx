@@ -67,20 +67,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="bg-gray-900 rounded-lg border border-gray-700 p-8">
-          <h1 className="text-2xl font-bold text-gray-100 text-center mb-8">Registrarse</h1>
+        <div className="dashboard-card shadow-2xl shadow-primary/10">
+          <h1 className="text-4xl font-bold text-white font-display text-center mb-8 uppercase tracking-wide">Registrarse</h1>
 
           {error && (
-            <div className="mb-6 p-3 bg-red-900 border border-red-700 rounded text-red-100 text-sm">
+            <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-200 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">
                 Nombre
               </label>
               <input
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded text-gray-100 focus:outline-none focus:border-blue-500 transition"
+                className="input-field"
                 placeholder="Tu nombre"
                 required
                 disabled={isLoading}
@@ -96,13 +96,13 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">Email</label>
               <input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded text-gray-100 focus:outline-none focus:border-blue-500 transition"
+                className="input-field"
                 placeholder="tu@email.com"
                 required
                 disabled={isLoading}
@@ -110,13 +110,13 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">Contraseña</label>
+              <label htmlFor="password" className="block text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">Contraseña</label>
               <input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded text-gray-100 focus:outline-none focus:border-blue-500 transition"
+                className="input-field"
                 placeholder="••••••••"
                 required
                 disabled={isLoading}
@@ -124,13 +124,13 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">Confirmar contraseña</label>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">Confirmar contraseña</label>
               <input
                 id="confirmPassword"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded text-gray-100 focus:outline-none focus:border-blue-500 transition"
+                className="input-field"
                 placeholder="••••••••"
                 required
                 disabled={isLoading}
@@ -140,15 +140,16 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-medium rounded transition"
+              className="w-full btn-primary py-3 text-lg mt-2"
             >
               {isLoading ? "Registrándose..." : "Registrarse"}
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-gray-700 text-center">
-            <p className="text-gray-400 text-sm">¿Ya tienes cuenta?{' '}
-              <Link href="/auth/login" className="text-blue-400 hover:text-blue-300">Inicia sesión aquí</Link>
+          <div className="mt-8 pt-6 border-t border-white/10 text-center">
+            <p className="text-foreground-muted text-sm font-sans">
+              ¿Ya tienes cuenta?{' '}
+              <Link href="/auth/login" className="text-primary hover:text-white font-medium transition-colors">Inicia sesión aquí</Link>
             </p>
           </div>
         </div>

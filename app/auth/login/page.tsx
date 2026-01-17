@@ -50,13 +50,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 has-[.bg-radial]:bg-radial">
       <div className="w-full max-w-md">
-        <div className="dashboard-card bg-slate-900 border-slate-800">
+        <div className="dashboard-card shadow-2xl shadow-primary/10">
           <div className="flex justify-center mb-6">
-            <img src="/logo-ct.png" alt="Clan Team FC Logo" className="w-24 h-24 object-contain" />
+            <img src="/logo-ct.png" alt="Clan Team FC Logo" className="w-24 h-24 object-contain drop-shadow-[0_0_15px_rgba(194,24,91,0.5)]" />
           </div>
-          <h1 className="text-2xl font-bold font-display text-white text-center mb-8 tracking-wide">
+          <h1 className="text-4xl font-bold font-display text-white text-center mb-8 tracking-wide">
             CLAN TEAM FC
           </h1>
 
@@ -66,9 +66,9 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-400 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">
                 Email
               </label>
               <input
@@ -84,7 +84,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-400 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">
                 Contraseña
               </label>
               <input
@@ -102,16 +102,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-primary py-2.5 font-bold tracking-wide"
+              className="w-full btn-primary py-3 text-lg"
             >
               {isLoading ? "Iniciando sesión..." : "INICIAR SESIÓN"}
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-800 text-center">
-            <p className="text-slate-500 text-sm">
+          <div className="mt-8 pt-6 border-t border-white/10 text-center">
+            <p className="text-foreground-muted text-sm font-sans">
               ¿No tienes cuenta?{' '}
-              <Link href="/auth/register" className="text-blue-400 hover:text-blue-300 font-medium">
+              <Link href="/auth/register" className="text-primary hover:text-white font-medium transition-colors">
                 Regístrate aquí
               </Link>
             </p>

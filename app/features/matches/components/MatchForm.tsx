@@ -56,9 +56,9 @@ export default function MatchForm({
     : formData.date;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-800 p-6 rounded-lg shadow">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-surface p-6 rounded-lg border border-white/5">
       <div>
-        <label htmlFor="date" className="block text-sm font-medium text-gray-100 mb-1">
+        <label htmlFor="date" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
           Fecha *
         </label>
         <input
@@ -68,12 +68,12 @@ export default function MatchForm({
           value={dateValue}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="input-field"
         />
       </div>
 
       <div>
-        <label htmlFor="opponent" className="block text-sm font-medium text-gray-100 mb-1">
+        <label htmlFor="opponent" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
           Rival *
         </label>
         <input
@@ -83,13 +83,13 @@ export default function MatchForm({
           value={formData.opponent}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="input-field"
           placeholder="Ej: FC Barcelona"
         />
       </div>
 
       <div>
-        <label htmlFor="result" className="block text-sm font-medium text-gray-100 mb-1">
+        <label htmlFor="result" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
           Resultado
         </label>
         <input
@@ -98,34 +98,34 @@ export default function MatchForm({
           name="result"
           value={formData.result || ''}
           onChange={handleChange}
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="input-field"
           placeholder="Ej: 3-2"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-100 mb-3">
+        <label className="block text-sm font-medium text-foreground-muted mb-3 font-display uppercase tracking-wider">
           Jugadores participantes *
         </label>
-        <div className="bg-gray-700 border border-gray-600 rounded-md p-4 max-h-48 overflow-y-auto space-y-2">
+        <div className="bg-background/50 border border-white/10 rounded-lg p-4 max-h-48 overflow-y-auto space-y-2">
           {availablePlayers.length === 0 ? (
-            <p className="text-gray-400 text-sm">No hay jugadores disponibles</p>
+            <p className="text-foreground-muted text-sm">No hay jugadores disponibles</p>
           ) : (
             availablePlayers.map((player) => (
-              <label key={player.id} className="flex items-center cursor-pointer">
+              <label key={player.id} className="flex items-center cursor-pointer group">
                 <input
                   type="checkbox"
                   checked={formData.playerIds.includes(player.id)}
                   onChange={() => handlePlayerToggle(player.id)}
-                  className="w-4 h-4 bg-gray-600 border-gray-500 rounded focus:ring-2 focus:ring-blue-500"
+                  className="w-4 h-4 rounded border-white/20 bg-white/5 checked:bg-primary focus:ring-primary transition"
                 />
-                <span className="ml-2 text-gray-100 text-sm">{player.name}</span>
+                <span className="ml-2 text-foreground-muted group-hover:text-white transition text-sm">{player.name}</span>
               </label>
             ))
           )}
         </div>
         {formData.playerIds.length === 0 && (
-          <p className="text-red-400 text-sm mt-1">Selecciona al menos un jugador</p>
+          <p className="text-error text-sm mt-1">Selecciona al menos un jugador</p>
         )}
       </div>
 
@@ -133,7 +133,7 @@ export default function MatchForm({
         <button
           type="submit"
           disabled={isLoading || formData.playerIds.length === 0}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-600 transition"
+          className="flex-1 btn-primary"
         >
           {isLoading ? 'Guardando...' : initialData ? 'Actualizar' : 'Crear'}
         </button>
@@ -141,7 +141,7 @@ export default function MatchForm({
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 px-4 py-2 bg-gray-700 text-gray-100 rounded-md hover:bg-gray-600 transition"
+            className="flex-1 btn-secondary"
           >
             Cancelar
           </button>

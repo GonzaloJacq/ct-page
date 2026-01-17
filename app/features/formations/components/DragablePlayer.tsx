@@ -23,12 +23,12 @@ export function DraggablePlayer({ player }: DraggablePlayerProps) {
       style={style}
       {...listeners}
       {...attributes}
-      className="bg-gray-800 hover:bg-gray-700 p-3 rounded-md cursor-grab active:cursor-grabbing transition"
+      className="bg-surface hover:bg-white/5 p-3 rounded-md cursor-grab active:cursor-grabbing transition border border-white/5"
     >
       <div className="flex items-center justify-between">
         <div>
           <p className="text-white font-medium">{player.name}</p>
-          <p className="text-gray-400 text-sm">
+          <p className="text-foreground-muted text-sm">
            #{player.shirtNumber}
           </p>
         </div>

@@ -56,67 +56,71 @@ export default function FeesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <Link href="/" className="flex items-center gap-3 group">
-            <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">
-              ←
-            </span>
-            <h1 className="text-4xl font-bold text-gray-100">
-              Gestión de Cuotas
-            </h1>
-          </Link>
-          {isAuthenticated && !showForm && (
-            <button
-              onClick={() => {
-                setEditingFee(null);
-                setShowForm(true);
-              }}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-            >
-              + Nueva Cuota
-            </button>
-          )}
-        </div>
-
-        {error && (
-          <div className="mb-4 p-4 bg-red-900 border border-red-700 text-red-100 rounded">
-            {error}
-          </div>
-        )}
-
-        {showForm && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-100 mb-4">
-              {editingFee ? "Editar Cuota" : "Nueva Cuota"}
-            </h2>
-            <FeeForm
-              onSubmit={handleSubmit}
-              initialData={editingFee}
-              isLoading={formLoading}
-              onCancel={handleCancel}
-              players={players}
-            />
-          </div>
-        )}
-
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-100 mb-4">Cuotas</h2>
-          {loading && !showForm ? (
-            <div className="text-center py-8">
-              <p className="text-gray-400">Cargando...</p>
-            </div>
-          ) : (
-            <FeeList
-              fees={fees}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              isLoading={loading}
-              isAuthenticated={isAuthenticated}
-            />
-          )}
+          <Link href="/" className="flex items-center gap-3 group mb-2 w-fit">
+            <span className="text-foreground-muted group-hover:text-white transition">← Volver</span>
+          </Link>
+          <h1 className="text-3xl font-display text-white">
+            GESTIÓN DE CUOTAS
+          </h1>
+          <p className="text-foreground-muted text-sm mt-1">Control de pagos y mensualidades</p>
         </div>
+        
+        {isAuthenticated && !showForm && (
+          <button
+            onClick={() => {
+              setEditingFee(null);
+              setShowForm(true);
+            }}
+            className="btn-primary flex items-center gap-2"
+          >
+            <span>+ Nueva Cuota</span>
+          </button>
+        )}
+      </div>
+
+      {error && (
+        <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-200 rounded-lg">
+          {error}
+        </div>
+      )}
+
+      {showForm && (
+        <div className="dashboard-card mb-8">
+          <h2 className="text-xl font-bold text-white mb-4">
+            {editingFee ? "Editar Cuota" : "Nueva Cuota"}
+          </h2>
+          <FeeForm
+            onSubmit={handleSubmit}
+            initialData={editingFee}
+            isLoading={formLoading}
+            onCancel={handleCancel}
+            players={players}
+          />
+        </div>
+      )}
+
+      <div>
+        {!showForm && (
+          <>
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                <p className="text-slate-400 mt-4">Cargando...</p>
+              </div>
+            ) : (
+              <FeeList
+                fees={fees}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                isLoading={loading}
+                isAuthenticated={isAuthenticated}
+              />
+            )}
+          </>
+        )}
       </div>
     </div>
   );

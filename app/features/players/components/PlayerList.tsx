@@ -19,49 +19,49 @@ export default function PlayerList({
 }: PlayerListProps) {
   if (players.length === 0) {
     return (
-      <div className="text-center py-8 bg-gray-800 rounded-lg shadow">
-        <p className="text-gray-400">No hay jugadores registrados</p>
+      <div className="text-center py-8 bg-surface rounded-lg shadow border border-white/5">
+        <p className="text-foreground-muted">No hay jugadores registrados</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto bg-gray-800 rounded-lg shadow">
-      <table className="min-w-full divide-y divide-gray-700">
-        <thead className="bg-gray-900">
+    <div className="overflow-x-auto bg-surface rounded-lg shadow border border-white/5">
+      <table className="min-w-full divide-y divide-white/5">
+        <thead className="bg-surface">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-bold text-white font-display uppercase tracking-wider">
               Nombre
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-bold text-white font-display uppercase tracking-wider">
               Edad
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-bold text-white font-display uppercase tracking-wider">
               Teléfono
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+            <th className="px-6 py-3 text-left text-xs font-bold text-white font-display uppercase tracking-wider">
               Camiseta
             </th>
             {isAuthenticated && (
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-bold text-white font-display uppercase tracking-wider">
                 Acciones
               </th>
             )}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-700">
+        <tbody className="divide-y divide-white/5">
           {players.map((player) => (
-            <tr key={player.id} className="hover:bg-gray-700 transition">
-              <td className="px-6 py-4 text-sm font-medium text-gray-100">
+            <tr key={player.id} className="hover:bg-white/5 transition">
+              <td className="px-6 py-4 text-sm font-medium text-foreground">
                 {player.name}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-300">
+              <td className="px-6 py-4 text-sm text-foreground-muted">
                 {player.age}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-300">
+              <td className="px-6 py-4 text-sm text-foreground-muted">
                 {player.phone}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-300">
+              <td className="px-6 py-4 text-sm text-foreground-muted font-mono">
                 #{player.shirtNumber}
               </td>
               {isAuthenticated && (
@@ -69,7 +69,7 @@ export default function PlayerList({
                   <button
                     onClick={() => onEdit(player)}
                     disabled={isLoading}
-                    className="text-blue-400 hover:text-blue-300 disabled:text-gray-600 transition"
+                    className="text-primary hover:text-white disabled:text-gray-600 transition"
                   >
                     Editar
                   </button>

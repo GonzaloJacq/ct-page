@@ -61,21 +61,21 @@ export default function ScorersPage() {
 
   return (
  
-      <div className="min-h-screen bg-gray-950 py-8 px-4">
-        <div className="max-w-6xl mx-auto">
+    <div className="space-y-6">
+
           <div className="flex justify-between items-center mb-8">
             <Link href="/" className="flex items-center gap-3 group">
-              <span className="text-2xl text-gray-400 group-hover:text-gray-200 transition">
+              <span className="text-2xl text-foreground-muted group-hover:text-white transition">
                 ←
               </span>
-              <h1 className="text-4xl font-bold text-gray-100">
+              <h1 className="text-4xl font-bold text-white font-display uppercase tracking-wide">
                 Top Goleadores
               </h1>
             </Link>
             {isAuthenticated && !showForm && (
               <button
                 onClick={() => setShowForm(true)}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                className="btn-primary px-4 py-2"
               >
                 + Registrar Gol
               </button>
@@ -89,15 +89,15 @@ export default function ScorersPage() {
           )}
 
           {showForm && (
-            <div className="mb-8 bg-gray-800 p-6 rounded-lg shadow">
-              <h2 className="text-2xl font-bold text-gray-100 mb-4">
+            <div className="mb-8 bg-surface p-6 rounded-lg border border-white/5">
+              <h2 className="text-2xl font-bold text-white mb-4 font-display uppercase tracking-wide">
                 Registrar Gol
               </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label
                     htmlFor="match"
-                    className="block text-sm font-medium text-gray-100 mb-1"
+                    className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider"
                   >
                     Partido *
                   </label>
@@ -106,7 +106,7 @@ export default function ScorersPage() {
                     value={selectedMatch}
                     onChange={(e) => setSelectedMatch(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field"
                   >
                     <option value="">Selecciona un partido</option>
                     {matches.map((match) => (
@@ -121,7 +121,7 @@ export default function ScorersPage() {
                 <div>
                   <label
                     htmlFor="player"
-                    className="block text-sm font-medium text-gray-100 mb-1"
+                    className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider"
                   >
                     Jugador *
                   </label>
@@ -130,7 +130,7 @@ export default function ScorersPage() {
                     value={selectedPlayer}
                     onChange={(e) => setSelectedPlayer(e.target.value)}
                     required
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field"
                   >
                     <option value="">Selecciona un jugador</option>
                     {players.map((player) => (
@@ -144,7 +144,7 @@ export default function ScorersPage() {
                 <div>
                   <label
                     htmlFor="goals"
-                    className="block text-sm font-medium text-gray-100 mb-1"
+                    className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider"
                   >
                     Número de goles *
                   </label>
@@ -158,7 +158,7 @@ export default function ScorersPage() {
                     required
                     min="1"
                     max="10"
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="input-field"
                   />
                 </div>
 
@@ -166,7 +166,7 @@ export default function ScorersPage() {
                   <button
                     type="submit"
                     disabled={formLoading || !selectedMatch || !selectedPlayer}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-600 transition"
+                    className="flex-1 btn-primary"
                   >
                     {formLoading ? "Registrando..." : "Registrar"}
                   </button>
@@ -178,7 +178,7 @@ export default function ScorersPage() {
                       setSelectedPlayer("");
                       setGoalsCount(1);
                     }}
-                    className="flex-1 px-4 py-2 bg-gray-700 text-gray-100 rounded-md hover:bg-gray-600 transition"
+                    className="flex-1 btn-secondary"
                   >
                     Cancelar
                   </button>
@@ -188,12 +188,12 @@ export default function ScorersPage() {
           )}
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-100 mb-4">
+            <h2 className="text-2xl font-bold text-white mb-4 font-display uppercase tracking-wide">
               Goleadores
             </h2>
             <ScorerList scorers={scorers} isLoading={loading && !showForm} />
           </div>
-        </div>
+
       </div>
  
   );

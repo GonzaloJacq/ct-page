@@ -20,8 +20,8 @@ export default function ScorerList({ scorers, isLoading = false }: ScorerListPro
 
   if (sortedScorers.length === 0) {
     return (
-      <div className="text-center py-8 bg-gray-800 rounded-lg">
-        <p className="text-gray-400">No hay registros de goles</p>
+      <div className="text-center py-8 bg-surface rounded-lg border border-white/5">
+        <p className="text-foreground-muted">No hay registros de goles</p>
       </div>
     );
   }
@@ -30,36 +30,36 @@ export default function ScorerList({ scorers, isLoading = false }: ScorerListPro
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead>
-          <tr className="bg-gray-800">
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+          <tr className="bg-surface border-b border-white/5">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Posición
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Jugador
             </th>
-            <th className="px-4 py-3 text-center text-sm font-semibold text-gray-100 border-b border-gray-700">
+            <th className="px-4 py-3 text-center text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Goles
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Rival
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Fecha
             </th>
           </tr>
         </thead>
         <tbody>
           {sortedScorers.map((scorer, index) => (
-            <tr  key={scorer.id ?? `${scorer.playerId}-${index}`} className="border-b border-gray-700 hover:bg-gray-750 transition">
-              <td className="px-4 py-3 text-sm text-gray-100 font-semibold">
+            <tr  key={scorer.id ?? `${scorer.playerId}-${index}`} className="border-b border-white/5 hover:bg-white/5 transition">
+              <td className="px-4 py-3 text-sm text-foreground-muted font-semibold">
                 #{index + 1}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-100">{scorer.playerName}</td>
-              <td className="px-4 py-3 text-center text-sm font-bold text-blue-400">
+              <td className="px-4 py-3 text-sm text-foreground font-medium">{scorer.playerName}</td>
+              <td className="px-4 py-3 text-center text-sm font-bold text-primary">
                 {scorer.goalsCount}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-400">{scorer.opponent}</td>
-              <td className="px-4 py-3 text-sm text-gray-400">
+              <td className="px-4 py-3 text-sm text-foreground-muted">{scorer.opponent}</td>
+              <td className="px-4 py-3 text-sm text-foreground-muted">
                 {new Date(scorer.matchDate).toLocaleDateString('es-ES')}
               </td>
             </tr>

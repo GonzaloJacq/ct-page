@@ -19,16 +19,16 @@ export default function FeeList({
 }: FeeListProps) {
   if (fees.length === 0) {
     return (
-      <div className="text-center py-8 bg-gray-800 rounded-lg shadow">
-        <p className="text-gray-400">No hay cuotas registradas</p>
+      <div className="text-center py-8 bg-surface rounded-lg shadow border border-white/5">
+        <p className="text-foreground-muted">No hay cuotas registradas</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto bg-gray-800 rounded-lg shadow">
-      <table className="min-w-full divide-y divide-gray-700">
-        <thead className="bg-gray-900">
+    <div className="overflow-x-auto bg-surface rounded-lg shadow border border-white/5">
+      <table className="min-w-full divide-y divide-white/5">
+        <thead className="bg-surface">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
               Jugador

@@ -13,10 +13,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-blue-500/30">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
       
       {/* Desktop Sidebar (Fixed) */}
-      <div className="hidden md:block fixed inset-y-0 left-0 z-50 w-64">
+      <div className="hidden md:block fixed inset-y-0 left-0 z-50 w-64 border-r border-white/5">
         <Sidebar className="w-full h-full" />
       </div>
 
@@ -25,16 +25,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="fixed inset-0 z-50 md:hidden">
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
+            className="absolute inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           
           {/* Drawer Content */}
-          <div className="absolute inset-y-0 left-0 w-72 bg-slate-950 shadow-2xl border-r border-slate-800 transform transition-transform">
+          <div className="absolute inset-y-0 left-0 w-72 bg-background shadow-2xl border-r border-white/5 transform transition-transform">
              <div className="absolute top-4 right-4 z-50">
                <button 
                  onClick={() => setIsMobileMenuOpen(false)}
-                 className="p-1 rounded-full hover:bg-slate-800 text-slate-400"
+                 className="p-1 rounded-full hover:bg-white/5 text-foreground-muted"
                >
                  <X className="w-5 h-5" />
                </button>

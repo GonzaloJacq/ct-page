@@ -171,7 +171,7 @@ export function FormationBuilder({
               onClick={() => setIsDrawingMode(!isDrawingMode)}
               className={`px-4 py-2 rounded-md transition ${
                 isDrawingMode
-                  ? "bg-blue-600 text-white"
+                  ? "bg-primary text-white"
                   : "bg-gray-700 text-gray-300 hover:bg-gray-600"
               }`}
             >
@@ -185,7 +185,7 @@ export function FormationBuilder({
                     onClick={() => setDrawingTool('line')}
                     className={`px-3 py-2 rounded-md transition ${
                       drawingTool === 'line'
-                        ? "bg-blue-600 text-white"
+                        ? "bg-primary text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
                     title="Línea"
@@ -196,7 +196,7 @@ export function FormationBuilder({
                     onClick={() => setDrawingTool('arrow')}
                     className={`px-3 py-2 rounded-md transition ${
                       drawingTool === 'arrow'
-                        ? "bg-blue-600 text-white"
+                        ? "bg-primary text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
                     title="Flecha"
@@ -207,7 +207,7 @@ export function FormationBuilder({
                     onClick={() => setDrawingTool('eraser')}
                     className={`px-3 py-2 rounded-md transition ${
                       drawingTool === 'eraser'
-                        ? "bg-blue-600 text-white"
+                        ? "bg-primary text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
                     title="Goma de borrar"
@@ -354,7 +354,7 @@ export function FormationBuilder({
             {/* Overlay para el drag */}
             <DragOverlay>
               {activePlayer && (
-                <div className="bg-blue-600 text-white px-3 py-2 rounded-md shadow-lg cursor-grabbing">
+                <div className="bg-primary text-white px-3 py-2 rounded-md shadow-lg cursor-grabbing">
                   {activePlayer.name}
                 </div>
               )}

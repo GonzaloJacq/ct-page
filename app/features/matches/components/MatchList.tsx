@@ -27,8 +27,8 @@ export default function MatchList({
 
   if (matches.length === 0) {
     return (
-      <div className="text-center py-8 bg-gray-800 rounded-lg">
-        <p className="text-gray-400">No hay partidos registrados</p>
+      <div className="text-center py-8 bg-surface rounded-lg border border-white/5">
+        <p className="text-foreground-muted">No hay partidos registrados</p>
       </div>
     );
   }
@@ -37,21 +37,21 @@ export default function MatchList({
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
         <thead>
-          <tr className="bg-gray-800">
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+          <tr className="bg-surface border-b border-white/5">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Fecha
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Rival
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Jugadores
             </th>
-            <th className="px-4 py-3 text-left text-sm font-semibold text-gray-100 border-b border-gray-700">
+            <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Resultado
             </th>
             {isAuthenticated && (
-              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-100 border-b border-gray-700">
+              <th className="px-4 py-3 text-center text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
                 Acciones
               </th>
             )}
@@ -59,28 +59,28 @@ export default function MatchList({
         </thead>
         <tbody>
           {matches.map((match) => (
-            <tr key={match.id} className="border-b border-gray-700 hover:bg-gray-750 transition">
-              <td className="px-4 py-3 text-sm text-gray-100">
+            <tr key={match.id} className="border-b border-white/5 hover:bg-white/5 transition">
+              <td className="px-4 py-3 text-sm text-foreground-muted">
                 {new Date(match.date).toLocaleDateString('es-ES')}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-100">{match.opponent}</td>
-              <td className="px-4 py-3 text-sm text-gray-400">
+              <td className="px-4 py-3 text-sm text-foreground font-medium">{match.opponent}</td>
+              <td className="px-4 py-3 text-sm text-foreground-muted">
                 {match.playerIds.length} {match.playerIds.length === 1 ? 'jugador' : 'jugadores'}
               </td>
-              <td className="px-4 py-3 text-sm text-gray-100">
+              <td className="px-4 py-3 text-sm text-foreground-muted">
                 {match.result || '-'}
               </td>
               {isAuthenticated && (
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => onEdit(match)}
-                    className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition mr-2"
+                    className="px-3 py-1 text-xs bg-primary text-white rounded hover:bg-primary/80 transition mr-2"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => onDelete(match.id)}
-                    className="px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    className="px-3 py-1 text-xs bg-red-600/20 text-red-500 border border-red-600/50 rounded hover:bg-red-600/30 transition"
                   >
                     Eliminar
                   </button>

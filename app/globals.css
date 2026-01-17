@@ -3,56 +3,64 @@
 @import "tailwindcss";
 
 :root {
-  /* Core Colors - Football Club Theme (Dark Navy & Gold) */
-  --background: #0f172a; /* Slate 900 - Deep Navy */
-  --surface: #1e293b;    /* Slate 800 - Lighter Navy for cards */
-  --surface-hover: #334155; /* Slate 700 */
-  
-  --foreground: #f8fafc; /* Slate 50 - Almost White text */
-  --foreground-muted: #94a3b8; /* Slate 400 - Muted text */
-  
-  --primary: #3b82f6;    /* Blue 500 - Primary Action */
+  /* Core Colors - Clan Team Theme (Dark & Magenta) */
+  --background: #080808;
+  /* Deep Black */
+  --surface: rgba(255, 255, 255, 0.03);
+  /* Glass Effect */
+  --surface-hover: rgba(255, 255, 255, 0.08);
+
+  --foreground: #ffffff;
+  --foreground-muted: #d1d5db;
+  /* Gray 300 */
+
+  --primary: #C2185B;
+  /* Magenta 700 */
   --primary-foreground: #ffffff;
-  
-  --accent: #fbbf24;     /* Amber 400 - Gold Accent */
-  --accent-foreground: #1e293b;
-  
-  --border: #334155;     /* Slate 700 - Subtle borders */
-  
+
+  --accent: #db2777;
+  /* Pink 600 */
+  --accent-foreground: #ffffff;
+
+  --border: rgba(255, 255, 255, 0.1);
+
   /* Status Colors */
-  --success: #10b981;    /* Emerald 500 */
-  --error: #ef4444;      /* Red 500 */
-  --warning: #f59e0b;    /* Amber 500 */
-  
+  --success: #10b981;
+  /* Emerald 500 */
+  --error: #ef4444;
+  /* Red 500 */
+  --warning: #f59e0b;
+  /* Amber 500 */
+
   /* Spacing & Radius */
-  --radius-lg: 0.75rem;
-  --radius-md: 0.5rem;
-  --radius-sm: 0.25rem;
-  
+  --radius-lg: 1rem;
+  --radius-md: 0.75rem;
+  --radius-sm: 0.5rem;
+
   /* Glassmorphism */
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-hover: var(--surface-hover);
-  
+
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
-  
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  
+
   --color-border: var(--border);
 
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-display: 'Oswald', 'Inter', system-ui, sans-serif; /* Sporty headers */
+  --font-sans: var(--font-montserrat), system-ui, sans-serif;
+  --font-display: var(--font-teko), system-ui, sans-serif;
 }
 
 /* Base Resets */
@@ -61,43 +69,42 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(194, 24, 91, 0.05) 0%, transparent 40%);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display, var(--font-sans));
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-weight: 500;
 }
 
 /* Utility Components */
 @layer components {
   .dashboard-card {
-    @apply bg-surface border border-border rounded-xl p-6 transition-all duration-200;
+    @apply bg-surface border border-border rounded-2xl p-6 transition-all duration-300 backdrop-blur-md;
   }
-  
+
   .dashboard-card:hover {
-    @apply border-gray-600 shadow-lg;
+    @apply bg-surface-hover border-white/20 shadow-lg shadow-primary/5;
     transform: translateY(-2px);
   }
 
-  .glass-panel {
-    background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-  }
-
   .btn-primary {
-    @apply bg-primary text-white px-4 py-2 rounded-lg font-medium transition hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-primary text-white px-6 py-2 rounded-full font-display text-lg tracking-wide hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20;
   }
 
   .btn-secondary {
-    @apply bg-surface border border-border text-foreground px-4 py-2 rounded-lg font-medium transition hover:bg-surface-hover hover:text-white;
+    @apply bg-transparent border border-white/20 text-white px-6 py-2 rounded-full font-display text-lg tracking-wide hover:bg-white/10 transition-all;
   }
 
   .input-field {
-    @apply bg-surface border border-border rounded-lg px-4 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition w-full;
+    @apply bg-surface border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition w-full;
   }
 }

@@ -15,15 +15,25 @@ import {
   Cell
 } from 'recharts';
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'];
+interface GoalsChartProps {
+  data?: { match: string; goals: number }[];
+}
+
+const NoDataState = ({ message }: { message: string }) => (
+  <div className="flex items-center justify-center w-full h-full text-slate-400 text-sm">
+    {message}
+  </div>
+);
+
+const COLORS = ['#C2185B', '#db2777', '#f59e0b', '#10b981'];
 const THEME_GRID_COLOR = 'rgba(255,255,255,0.1)';
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-slate-900 border border-slate-700 p-2 rounded shadow-xl">
-        <p className="text-slate-200 text-sm font-bold">{`${label}`}</p>
-        <p className="text-blue-400 text-sm">
+      <div className="bg-background border border-white/10 p-2 rounded shadow-xl">
+        <p className="text-white text-sm font-bold">{`${label}`}</p>
+        <p className="text-primary text-sm">
           {`${payload[0].name}: ${payload[0].value}`}
         </p>
       </div>
@@ -32,26 +42,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-// Empty State Component
-const NoDataState = ({ message }: { message: string }) => (
-  <div className="h-full w-full flex flex-col items-center justify-center text-slate-500 bg-slate-900/30 rounded-lg border border-slate-800 border-dashed">
-    <p className="text-sm font-medium">{message}</p>
-  </div>
-);
-
-interface GoalsChartProps {
-  data?: { match: string; goals: number }[];
-}
+// ...
 
 export function GoalsChart({ data = [] }: GoalsChartProps) {
-  if (!data || data.length === 0) {
-    return (
-      <div className="h-64 w-full">
-        <NoDataState message="No hay datos de goles registrados" />
-      </div>
-    );
-  }
-
+  // ...
   return (
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -59,7 +53,7 @@ export function GoalsChart({ data = [] }: GoalsChartProps) {
           <CartesianGrid strokeDasharray="3 3" stroke={THEME_GRID_COLOR} vertical={false} />
           <XAxis dataKey="match" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-          <Bar dataKey="goals" name="Goles" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={30} />
+          <Bar dataKey="goals" name="Goles" fill="#C2185B" radius={[4, 4, 0, 0]} barSize={30} />
         </BarChart>
       </ResponsiveContainer>
     </div>

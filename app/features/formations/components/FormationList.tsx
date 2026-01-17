@@ -30,9 +30,9 @@ export function FormationsList({
 
   if (formations.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-900 rounded-lg">
-        <p className="text-gray-400 text-lg mb-2">No hay formaciones guardadas</p>
-        <p className="text-gray-500">Crea tu primera formación arrastrando jugadores a la cancha</p>
+      <div className="text-center py-12 bg-surface rounded-lg border border-white/5">
+        <p className="text-foreground-muted text-lg mb-2">No hay formaciones guardadas</p>
+        <p className="text-foreground-muted/60">Crea tu primera formación arrastrando jugadores a la cancha</p>
       </div>
     );
   }
@@ -49,7 +49,7 @@ export function FormationsList({
         return (
           <div
             key={formation.id}
-            className="bg-gray-900 rounded-lg overflow-hidden hover:ring-2 hover:ring-green-600 transition"
+            className="bg-surface rounded-lg overflow-hidden border border-white/5 hover:border-primary/50 transition duration-300"
           >
             {/* Preview de la cancha */}
             <div className="relative w-full aspect-[2/3] bg-green-700">
@@ -70,7 +70,7 @@ export function FormationsList({
                     className="absolute -translate-x-1/2 -translate-y-1/2"
                     style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
                   >
-                    <div className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border border-white">
+                    <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border border-white shadow-md">
                       {player.shirtNumber}
                     </div>
                   </div>
@@ -87,10 +87,10 @@ export function FormationsList({
 
             {/* Info */}
             <div className="p-4">
-              <h3 className="text-xl font-bold text-gray-100 mb-2">
+              <h3 className="text-xl font-bold text-white mb-2 font-display uppercase tracking-wide">
                 {formation.name}
               </h3>
-              <p className="text-gray-400 text-sm mb-4">
+              <p className="text-foreground-muted text-sm mb-4">
                 {playersCount} jugador{playersCount !== 1 ? "es" : ""}
                 {hasDrawings && " • Incluye anotaciones"}
               </p>
@@ -99,7 +99,7 @@ export function FormationsList({
                 <div className="flex gap-2">
                   <button
                     onClick={() => onEdit(formation)}
-                    className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm"
+                    className="flex-1 px-3 py-2 btn-primary text-sm"
                   >
                     Editar
                   </button>

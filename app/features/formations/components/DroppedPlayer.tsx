@@ -43,7 +43,7 @@ export function DroppedPlayer({ player, position, onRemove }: DroppedPlayerProps
 
         {/* Jugador */}
         <div 
-          className="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg cursor-grab active:cursor-grabbing border-2 border-white"
+          className="bg-primary text-white px-4 py-2 rounded-full shadow-lg cursor-grab active:cursor-grabbing border-2 border-white"
           {...listeners}
           {...attributes}
         >

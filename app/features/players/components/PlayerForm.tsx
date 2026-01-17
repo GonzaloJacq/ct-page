@@ -55,9 +55,9 @@ export default function PlayerForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-800 p-6 rounded-lg shadow">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-surface p-6 rounded-lg border border-white/5">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-100 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
           Nombre *
         </label>
         <input
@@ -67,14 +67,14 @@ export default function PlayerForm({
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="input-field"
           placeholder="Ej: Juan García"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="age" className="block text-sm font-medium text-gray-100 mb-1">
+          <label htmlFor="age" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
             Edad *
           </label>
           <input
@@ -86,12 +86,12 @@ export default function PlayerForm({
             required
             min="18"
             max="80"
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field"
           />
         </div>
 
         <div>
-          <label htmlFor="shirtNumber" className="block text-sm font-medium text-gray-100 mb-1">
+          <label htmlFor="shirtNumber" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
             # Camiseta *
           </label>
           <input
@@ -103,13 +103,13 @@ export default function PlayerForm({
             required
             min="1"
             max="99"
-            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="input-field"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-100 mb-1">
+        <label htmlFor="phone" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
           Teléfono *
         </label>
         <input
@@ -119,7 +119,7 @@ export default function PlayerForm({
           value={formData.phone}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="input-field"
           placeholder="+34 123 456 789"
         />
       </div>
@@ -128,7 +128,7 @@ export default function PlayerForm({
         <button
           type="submit"
           disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-600 transition"
+          className="flex-1 btn-primary"
         >
           {isLoading ? 'Guardando...' : 'Guardar'}
         </button>
@@ -136,7 +136,7 @@ export default function PlayerForm({
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 bg-gray-700 text-gray-100 rounded-md hover:bg-gray-600 transition"
+            className="flex-1 btn-secondary"
           >
             Cancelar
           </button>

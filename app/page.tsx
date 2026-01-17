@@ -23,24 +23,24 @@ export default async function Home() {
 
   // Quick Stats Mock Data (In a real app, we would fetch these serverside via Prisma)
   const stats = [
-    { label: "Jugadores Activos", value: players.length.toString(), icon: Users, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { label: "Jugadores Activos", value: players.length.toString(), icon: Users, color: "text-primary", bg: "bg-primary/10" },
     { label: "Formaciones", value: formations.length.toString(), icon: Shirt, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-    { label: "Próximo Partido", value: "Sin programar", icon: Trophy, color: "text-slate-500", bg: "bg-slate-500/10" },
+    { label: "Próximo Partido", value: "Sin programar", icon: Trophy, color: "text-foreground-muted", bg: "bg-white/5" },
   ];
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-10">
         
         {/* Welcome Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-white/5 pb-6">
           <div>
-            <h1 className="text-3xl text-white font-display mb-1">
-              HOLA, {session?.user?.name?.toUpperCase() || 'ENTRENADOR'}
+            <h1 className="text-7xl text-white font-display uppercase leading-none tracking-tight">
+              HOLA, <span className="text-primary">{session?.user?.name || 'ENTRENADOR'}</span>
             </h1>
-            <p className="text-slate-400">Aquí tienes el resumen de tu equipo hoy.</p>
+            <p className="text-foreground-muted text-lg font-sans mt-2">Resumen de actividad del equipo</p>
           </div>
-          <div className="text-sm text-slate-500 font-mono bg-slate-900 px-3 py-1 rounded-md border border-slate-800">
+          <div className="text-base text-primary font-display tracking-widest uppercase border border-white/10 px-4 py-1 rounded-full bg-white/5">
             {new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </div>
@@ -48,13 +48,16 @@ export default async function Home() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {stats.map((stat, index) => (
-            <div key={index} className="dashboard-card flex items-center gap-4">
-              <div className={`p-3 rounded-lg ${stat.bg} ${stat.color}`}>
-                <stat.icon className="w-6 h-6" />
+            <div key={index} className="dashboard-card group flex items-center gap-5 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <stat.icon className="w-24 h-24" />
+              </div>
+              <div className={`p-4 rounded-full bg-white/5 text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300`}>
+                <stat.icon className="w-8 h-8" />
               </div>
               <div>
-                <p className="text-sm text-slate-400 font-medium">{stat.label}</p>
-                <p className="text-2xl font-bold text-white mt-0.5">{stat.value}</p>
+                <p className="text-sm text-foreground-muted font-sans font-medium uppercase tracking-wider">{stat.label}</p>
+                <p className="text-4xl font-display font-medium text-white leading-none mt-1">{stat.value}</p>
               </div>
             </div>
           ))}
@@ -62,27 +65,27 @@ export default async function Home() {
 
         {/* Analytics Section */}
         <div>
-          <h2 className="text-xl text-white font-display mb-4 flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-blue-500" />
+          <h2 className="text-3xl text-white font-display mb-6 flex items-center gap-3 uppercase">
+            <BarChart2 className="w-6 h-6 text-primary" />
             Analítica de Rendimiento
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Goals Chart */}
             <div className="dashboard-card md:col-span-2">
-              <h3 className="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Goles por Partido (Últimos 5)</h3>
+              <h3 className="text-lg font-display text-white mb-6 uppercase tracking-wider border-l-4 border-primary pl-3">Goles por Partido (Últimos 5)</h3>
               <GoalsChart data={[]} />
             </div>
 
             {/* Pie Chart */}
             <div className="dashboard-card">
-              <h3 className="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Distribución de Plantilla</h3>
+              <h3 className="text-lg font-display text-white mb-6 uppercase tracking-wider border-l-4 border-primary pl-3">Distribución de Plantilla</h3>
               <PlayerStatsPie data={[]} />
             </div>
 
             {/* Trend Chart (Full Width on mobile, 3 cols on desktop) */}
             <div className="dashboard-card md:col-span-3">
-              <h3 className="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">Tendencia de Puntos (Temporada)</h3>
+              <h3 className="text-lg font-display text-white mb-6 uppercase tracking-wider border-l-4 border-primary pl-3">Tendencia de Puntos (Temporada)</h3>
               <MatchesTrend data={[]} />
             </div>
           </div>
@@ -93,53 +96,59 @@ export default async function Home() {
           
           {/* Main Action Area */}
           <div className="lg:col-span-2 space-y-6">
-            <h2 className="text-xl text-white font-display">Accesos Directos</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Link href="/features/players" className="group dashboard-card hover:bg-blue-600/5 hover:border-blue-500/50 flex flex-col justify-between h-32 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <UserPlus className="w-16 h-16 text-blue-500" />
+            <h2 className="text-3xl text-white font-display uppercase">Accesos Directos</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <Link href="/features/players" className="group dashboard-card hover:border-primary/50 flex flex-col justify-between h-40 relative overflow-hidden">
+                <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity rotate-12">
+                  <UserPlus className="w-32 h-32 text-primary" />
                 </div>
-                <div className="relative z-10">
-                  <div className="w-10 h-10 bg-blue-500/20 text-blue-500 rounded-lg flex items-center justify-center mb-3">
-                    <UserPlus className="w-5 h-5" />
+                <div className="relative z-10 h-full flex flex-col justify-between">
+                  <div className="w-12 h-12 bg-primary/20 text-primary rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <UserPlus className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-white">Gestionar Jugadores</h3>
+                  <div>
+                    <h3 className="text-2xl font-display font-medium text-white uppercase group-hover:translate-x-1 transition-transform">Gestionar Jugadores</h3>
+                    <p className="text-sm text-foreground-muted mt-1 font-sans">Añadir, editar o eliminar fichas</p>
+                  </div>
                 </div>
               </Link>
 
-              <Link href="/features/formations" className="group dashboard-card hover:bg-emerald-600/5 hover:border-emerald-500/50 flex flex-col justify-between h-32 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                  <FileEdit className="w-16 h-16 text-emerald-500" />
+              <Link href="/features/formations" className="group dashboard-card hover:border-primary/50 flex flex-col justify-between h-40 relative overflow-hidden">
+                <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity rotate-12">
+                  <FileEdit className="w-32 h-32 text-primary" />
                 </div>
-                <div className="relative z-10">
-                  <div className="w-10 h-10 bg-emerald-500/20 text-emerald-500 rounded-lg flex items-center justify-center mb-3">
-                    <FileEdit className="w-5 h-5" />
+                <div className="relative z-10 h-full flex flex-col justify-between">
+                  <div className="w-12 h-12 bg-primary/20 text-primary rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    <FileEdit className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-bold text-white">Editor Táctico</h3>
+                  <div>
+                    <h3 className="text-2xl font-display font-medium text-white uppercase group-hover:translate-x-1 transition-transform">Editor Táctico</h3>
+                    <p className="text-sm text-foreground-muted mt-1 font-sans">Crear y modificar alineaciones</p>
+                  </div>
                 </div>
               </Link>
             </div>
           </div>
 
           {/* Sidebar / Info */}
-          <div className="dashboard-card bg-slate-900/50">
-            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-amber-500" />
+          <div className="dashboard-card bg-white/5 border-white/5">
+            <h3 className="text-2xl font-display text-white mb-6 flex items-center gap-2 uppercase">
+              <Trophy className="w-6 h-6 text-accent" />
               Temporada Actual
             </h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-slate-400">Posición</span>
-                <span className="text-white font-bold">--</span>
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <span className="text-foreground-muted font-sans uppercase tracking-wider text-sm">Posición en Liga</span>
+                <span className="text-4xl text-white font-display">--</span>
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-slate-400">Puntos</span>
-                <span className="text-white font-bold">--</span>
+              <div className="flex justify-between items-center">
+                <span className="text-foreground-muted font-sans uppercase tracking-wider text-sm">Puntos Totales</span>
+                <span className="text-4xl text-white font-display">--</span>
               </div>
-              <div className="w-full h-[1px] bg-slate-800 my-2" />
-              <Link href="/features/matches" className="flex items-center justify-between text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                Ver Calendario Completo
-                <ArrowRight className="w-4 h-4" />
+              <div className="w-full h-[1px] bg-white/10 my-4" />
+              <Link href="/features/matches" className="flex items-center justify-between text-sm text-primary hover:text-white transition-colors font-medium uppercase tracking-wide group">
+                Ver Calendario
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </div>

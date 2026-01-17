@@ -8,14 +8,18 @@ import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { IncomingMessage } from 'http';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import { Teko, Montserrat } from "next/font/google";
+
+const teko = Teko({
+  variable: "--font-teko",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -83,9 +87,9 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${teko.variable} ${montserrat.variable} antialiased font-sans`}
       >
         <SessionWrapper session={session}>
           {children}
