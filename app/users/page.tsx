@@ -114,7 +114,7 @@ export default function UsersPage() {
                 Admin
               </th>
             </tr>
-          ,</thead>
+          </thead>
           <tbody className="divide-y divide-white/5">
             {users.map((user) => (
               <tr key={user.id} className="hover:bg-white/5 transition">
