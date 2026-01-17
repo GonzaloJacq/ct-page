@@ -1,63 +1,50 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getPlayers, createPlayer } from '@/lib/db/players';
 import { ApiResponse, Player, CreatePlayerInput } from '@/app/features/players/types';
+import { apiResponse, apiError } from '@/lib/api-utils';
+import { isMissing, isWithinRange, ValidationError } from '@/lib/validation';
 
-export async function GET(): Promise<NextResponse<ApiResponse<Player[]>>> {
+export async function GET() {
   try {
     const players = await getPlayers();
-    return NextResponse.json({
-      success: true,
-      data: players,
-    });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener jugadores' },
-      { status: 500 }
-    );
+    return apiResponse<Player[]>(players);
+  } catch (error) {
+    console.error('GET /api/players error:', error);
+    return apiError('Error al obtener jugadores', 500);
   }
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<Player>>> {
+function validateCreatePlayer(body: CreatePlayerInput): void {
+  if (isMissing(body.name)) {
+    throw new ValidationError('El nombre es requerido');
+  }
+
+  if (!isWithinRange(body.age, 18, 100)) {
+    throw new ValidationError('La edad debe estar entre 18 y 100');
+  }
+
+  if (isMissing(body.phone)) {
+    throw new ValidationError('El teléfono es requerido');
+  }
+
+  if (!isWithinRange(body.shirtNumber, 1, 99)) {
+    throw new ValidationError('El número de camiseta debe estar entre 1 y 99');
+  }
+}
+
+export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as CreatePlayerInput;
 
-    if (!body.name || body.name.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: 'El nombre es requerido' },
-        { status: 400 }
-      );
-    }
-
-    if (body.age < 18 || body.age > 100) {
-      return NextResponse.json(
-        { success: false, error: 'La edad debe estar entre 18 y 100' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.phone || body.phone.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: 'El teléfono es requerido' },
-        { status: 400 }
-      );
-    }
-
-    if (body.shirtNumber < 1 || body.shirtNumber > 99) {
-      return NextResponse.json(
-        { success: false, error: 'El número de camiseta debe estar entre 1 y 99' },
-        { status: 400 }
-      );
-    }
+    validateCreatePlayer(body);
 
     const player = await createPlayer(body);
-    return NextResponse.json(
-      { success: true, data: player },
-      { status: 201 }
-    );
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al crear jugador' },
-      { status: 500 }
-    );
+    return apiResponse<Player>(player, 201);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return apiError(error.message, error.statusCode);
+    }
+    console.error('POST /api/players error:', error);
+    return apiError('Error al crear jugador', 500);
   }
 }

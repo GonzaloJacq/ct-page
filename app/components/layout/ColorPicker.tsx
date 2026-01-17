@@ -58,7 +58,7 @@ export default function ColorPicker() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 text-foreground-muted hover:text-white rounded-lg hover:bg-white/5 transition-colors relative group"
+        className="cursor-pointer p-2 text-foreground-muted hover:text-white rounded-lg hover:bg-white/5 transition-colors relative group"
         title="Cambiar color de tema"
       >
         <Palette className="w-5 h-5" />
@@ -76,7 +76,7 @@ export default function ColorPicker() {
                   key={color}
                   onClick={() => handleColorSelect(color)}
                   disabled={loading}
-                  className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 relative"
+                  className="cursor-pointer w-10 h-10 rounded-full border border-white/10 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 relative"
                   style={{ backgroundColor: color }}
                 >
                   {currentColor === color && (

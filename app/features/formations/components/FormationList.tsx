@@ -99,13 +99,13 @@ export function FormationsList({
                 <div className="flex gap-2">
                   <button
                     onClick={() => onEdit(formation)}
-                    className="flex-1 px-3 py-2 btn-primary text-sm"
+                    className="flex-1 px-3 py-2 btn-primary text-sm cursor-pointer"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => onDelete(formation.id)}
-                    className="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm"
+                    className="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm cursor-pointer"
                   >
                     Eliminar
                   </button>

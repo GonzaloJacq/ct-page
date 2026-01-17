@@ -74,13 +74,13 @@ export default function MatchList({
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => onEdit(match)}
-                    className="px-3 py-1 text-xs bg-primary text-white rounded hover:bg-primary/80 transition mr-2"
+                    className="cursor-pointer px-3 py-1 text-xs bg-primary text-white rounded hover:bg-primary/80 transition mr-2"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => onDelete(match.id)}
-                    className="px-3 py-1 text-xs bg-red-600/20 text-red-500 border border-red-600/50 rounded hover:bg-red-600/30 transition"
+                    className="cursor-pointer px-3 py-1 text-xs bg-red-600/20 text-red-500 border border-red-600/50 rounded hover:bg-red-600/30 transition"
                   >
                     Eliminar
                   </button>

@@ -69,14 +69,14 @@ export default function PlayerList({
                   <button
                     onClick={() => onEdit(player)}
                     disabled={isLoading}
-                    className="text-primary hover:text-white disabled:text-gray-600 transition"
+                    className="cursor-pointer text-primary hover:text-white disabled:text-gray-600 transition"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => onDelete(player.id)}
                     disabled={isLoading}
-                    className="text-red-400 hover:text-red-300 disabled:text-gray-600 transition"
+                    className="cursor-pointer text-red-400 hover:text-red-300 disabled:text-gray-600 transition"
                   >
                     Eliminar
                   </button>

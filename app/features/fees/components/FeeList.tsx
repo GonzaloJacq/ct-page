@@ -77,14 +77,14 @@ export default function FeeList({
                   <button
                     onClick={() => onEdit(fee)}
                     disabled={isLoading}
-                    className="text-blue-400 hover:text-blue-300 disabled:text-gray-600 transition"
+                    className="cursor-pointer text-blue-400 hover:text-blue-300 disabled:text-gray-600 transition"
                   >
                     Editar
                   </button>
                   <button
                     onClick={() => onDelete(fee.id)}
                     disabled={isLoading}
-                    className="text-red-400 hover:text-red-300 disabled:text-gray-600 transition"
+                    className="cursor-pointer text-red-400 hover:text-red-300 disabled:text-gray-600 transition"
                   >
                     Eliminar
                   </button>

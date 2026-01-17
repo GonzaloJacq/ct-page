@@ -97,11 +97,11 @@ h6 {
   }
 
   .btn-primary {
-    @apply bg-primary text-white px-6 py-2 rounded-full font-display text-lg tracking-wide hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20;
+    @apply bg-primary text-white px-6 py-2 rounded-full font-display text-lg tracking-wide hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20 cursor-pointer;
   }
 
   .btn-secondary {
-    @apply bg-transparent border border-white/20 text-white px-6 py-2 rounded-full font-display text-lg tracking-wide hover:bg-white/10 transition-all;
+    @apply bg-transparent border border-white/20 text-white px-6 py-2 rounded-full font-display text-lg tracking-wide hover:bg-white/10 transition-all cursor-pointer;
   }
 
   .input-field {

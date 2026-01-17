@@ -1,72 +1,58 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getFeeById, updateFee, deleteFee } from '@/lib/db/fees';
-import { ApiResponse, Fee, UpdateFeeInput } from '@/app/features/fees/types';
+import { UpdateFeeInput } from '@/app/features/fees/types';
+import { apiResponse, apiError } from '@/lib/api-utils';
 
 export async function GET(
   _: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiResponse<Fee>>> {
+) {
   try {
     const { id } = await params;
     const fee = await getFeeById(id);
     if (!fee) {
-      return NextResponse.json(
-        { success: false, error: 'Cuota no encontrada' },
-        { status: 404 }
-      );
+      return apiError('Cuota no encontrada', 404);
     }
-    return NextResponse.json({ success: true, data: fee });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener cuota' },
-      { status: 500 }
-    );
+    return apiResponse(fee);
+  } catch (error) {
+    console.error('GET /api/fees/[id] error:', error);
+    return apiError('Error al obtener cuota', 500);
   }
 }
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiResponse<Fee>>> {
+) {
   try {
     const { id } = await params;
     const body = (await request.json()) as UpdateFeeInput;
 
     const fee = await updateFee(id, body);
     if (!fee) {
-      return NextResponse.json(
-        { success: false, error: 'Cuota no encontrada' },
-        { status: 404 }
-      );
+      return apiError('Cuota no encontrada', 404);
     }
 
-    return NextResponse.json({ success: true, data: fee });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al actualizar cuota' },
-      { status: 500 }
-    );
+    return apiResponse(fee);
+  } catch (error) {
+    console.error('PUT /api/fees/[id] error:', error);
+    return apiError('Error al actualizar cuota', 500);
   }
 }
 
 export async function DELETE(
   _: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiResponse<null>>> {
+) {
   try {
     const { id } = await params;
     const success = await deleteFee(id);
     if (!success) {
-      return NextResponse.json(
-        { success: false, error: 'Cuota no encontrada' },
-        { status: 404 }
-      );
+      return apiError('Cuota no encontrada', 404);
     }
-    return NextResponse.json({ success: true, data: null, message: 'Cuota eliminada' });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al eliminar cuota' },
-      { status: 500 }
-    );
+    return apiResponse(null, 200);
+  } catch (error) {
+    console.error('DELETE /api/fees/[id] error:', error);
+    return apiError('Error al eliminar cuota', 500);
   }
 }

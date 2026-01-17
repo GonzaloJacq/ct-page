@@ -1,63 +1,50 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getScorers, createScorer } from '@/lib/db/scorers';
-import { ApiResponse, Scorer, CreateScorerInput } from '@/app/features/scorers/types';
+import { Scorer, CreateScorerInput } from '@/app/features/scorers/types';
+import { apiResponse, apiError } from '@/lib/api-utils';
+import { isMissing, ValidationError } from '@/lib/validation';
 
-export async function GET(): Promise<NextResponse<ApiResponse<Scorer[]>>> {
+export async function GET() {
   try {
     const scorers = await getScorers();
-    return NextResponse.json({
-      success: true,
-      data: scorers,
-    });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener goleadores' },
-      { status: 500 }
-    );
+    return apiResponse<Scorer[]>(scorers);
+  } catch (error) {
+    console.error('GET /api/scorers error:', error);
+    return apiError('Error al obtener goleadores', 500);
   }
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<Scorer>>> {
+function validateCreateScorer(body: CreateScorerInput): void {
+  if (isMissing(body.matchId)) {
+    throw new ValidationError('El partido es requerido');
+  }
+
+  if (isMissing(body.playerId)) {
+    throw new ValidationError('El jugador es requerido');
+  }
+
+  if (isMissing(body.playerName)) {
+    throw new ValidationError('El nombre del jugador es requerido');
+  }
+
+  if (body.goalsCount < 1) {
+    throw new ValidationError('El número de goles debe ser mayor a 0');
+  }
+}
+
+export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as CreateScorerInput;
 
-    if (!body.matchId || body.matchId.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: 'El partido es requerido' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.playerId || body.playerId.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: 'El jugador es requerido' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.playerName || body.playerName.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: 'El nombre del jugador es requerido' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.goalsCount || body.goalsCount < 1) {
-      return NextResponse.json(
-        { success: false, error: 'El número de goles debe ser mayor a 0' },
-        { status: 400 }
-      );
-    }
+    validateCreateScorer(body);
 
     const scorer = await createScorer(body);
-    return NextResponse.json(
-      { success: true, data: scorer },
-      { status: 201 }
-    );
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al crear registro de goles' },
-      { status: 500 }
-    );
+    return apiResponse<Scorer>(scorer, 201);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return apiError(error.message, error.statusCode);
+    }
+    console.error('POST /api/scorers error:', error);
+    return apiError('Error al crear registro de goles', 500);
   }
 }

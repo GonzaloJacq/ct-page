@@ -75,7 +75,7 @@ export default function ScorersPage() {
             {isAuthenticated && !showForm && (
               <button
                 onClick={() => setShowForm(true)}
-                className="btn-primary px-4 py-2"
+                className="btn-primary px-4 py-2 cursor-pointer"
               >
                 + Registrar Gol
               </button>

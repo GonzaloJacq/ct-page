@@ -1,100 +1,87 @@
 import { useState, useCallback } from 'react';
-import { Fee, CreateFeeInput, UpdateFeeInput } from '../types';
+import { Fee, CreateFeeInput, UpdateFeeInput, ApiResponse } from '../types';
 
 export const useFees = () => {
   const [fees, setFees] = useState<Fee[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchFees = useCallback(async () => {
+  const resetError = useCallback(() => setError(null), []);
+
+  const request = useCallback(async <T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T | null> => {
     setLoading(true);
-    setError(null);
+    resetError();
     try {
-      const response = await fetch('/api/fees');
-      const data = await response.json();
-      if (data.success) {
-        setFees(data.data);
-      } else {
-        setError(data.error || 'Error al cargar cuotas');
+      const response = await fetch(endpoint, options);
+      const data: ApiResponse<T> = await response.json();
+      
+      if (!data.success) {
+        setError(data.error || 'Error desconocido');
+        return null;
       }
-    } catch {
-      setError('Error al conectar con el servidor');
+      return data.data || null;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Error de conexión';
+      setError(message);
+      return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [resetError]);
+
+  const fetchFees = useCallback(async () => {
+    const data = await request<Fee[]>('/api/fees');
+    if (data) setFees(data);
+  }, [request]);
 
   const createFee = useCallback(async (input: CreateFeeInput) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('/api/fees', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setFees((prev) => [...prev, data.data]);
-        return data.data;
-      }
-      setError(data.error || 'Error al crear cuota');
-      return null;
-    } catch {
-      setError('Error al conectar con el servidor');
-      return null;
-    } finally {
-      setLoading(false);
+    const data = await request<Fee>('/api/fees', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+    });
+    if (data) {
+      setFees((prev) => [...prev, data]);
+      return data;
     }
-  }, []);
+    return null;
+  }, [request]);
 
   const updateFee = useCallback(async (id: string, input: UpdateFeeInput) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(`/api/fees/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setFees((prev) =>
-          prev.map((fee) => (fee.id === id ? data.data : fee))
-        );
-        return data.data;
-      }
-      setError(data.error || 'Error al actualizar cuota');
-      return null;
-    } catch {
-      setError('Error al conectar con el servidor');
-      return null;
-    } finally {
-      setLoading(false);
+    const data = await request<Fee>(`/api/fees/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(input),
+    });
+    if (data) {
+      setFees((prev) => prev.map((fee) => (fee.id === id ? data : fee)));
+      return data;
     }
-  }, []);
+    return null;
+  }, [request]);
 
   const deleteFee = useCallback(async (id: string) => {
     setLoading(true);
-    setError(null);
+    resetError();
     try {
       const response = await fetch(`/api/fees/${id}`, { method: 'DELETE' });
-      const data = await response.json();
-      if (data.success) {
-        setFees((prev) => prev.filter((fee) => fee.id !== id));
-        return true;
+      const data: ApiResponse<null> = await response.json();
+      if (!data.success) {
+        setError(data.error || 'Error al eliminar');
+        return false;
       }
-      setError(data.error || 'Error al eliminar cuota');
-      return false;
-    } catch {
-      setError('Error al conectar con el servidor');
+      setFees((prev) => prev.filter((fee) => fee.id !== id));
+      return true;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al conectar');
       return false;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [resetError]);
 
   return { fees, loading, error, fetchFees, createFee, updateFee, deleteFee };
 };

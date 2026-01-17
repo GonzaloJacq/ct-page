@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { Scorer, CreateScorerInput, UpdateScorerInput, ApiResponse } from '../types';
+import { Formation, CreateFormationInput, UpdateFormationInput, ApiResponse } from '../types';
 
-export const useScorers = () => {
-  const [scorers, setScorers] = useState<Scorer[]>([]);
+export const useFormations = () => {
+  const [formations, setFormations] = useState<Formation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,48 +32,48 @@ export const useScorers = () => {
     }
   }, [resetError]);
 
-  const fetchScorers = useCallback(async () => {
-    const data = await request<Scorer[]>('/api/scorers');
-    if (data) setScorers(data);
+  const fetchFormations = useCallback(async () => {
+    const data = await request<Formation[]>('/api/formations');
+    if (data) setFormations(data);
   }, [request]);
 
-  const createScorer = useCallback(async (input: CreateScorerInput) => {
-    const data = await request<Scorer>('/api/scorers', {
+  const createFormation = useCallback(async (input: CreateFormationInput) => {
+    const data = await request<Formation>('/api/formations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
     });
     if (data) {
-      setScorers((prev) => [...prev, data]);
+      setFormations((prev) => [...prev, data]);
       return data;
     }
     return null;
   }, [request]);
 
-  const updateScorer = useCallback(async (id: string, input: UpdateScorerInput) => {
-    const data = await request<Scorer>(`/api/scorers/${id}`, {
+  const updateFormation = useCallback(async (id: string, input: UpdateFormationInput) => {
+    const data = await request<Formation>(`/api/formations/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(input),
     });
     if (data) {
-      setScorers((prev) => prev.map((s) => (s.id === id ? data : s)));
+      setFormations((prev) => prev.map((f) => (f.id === id ? data : f)));
       return data;
     }
     return null;
   }, [request]);
 
-  const deleteScorer = useCallback(async (id: string) => {
+  const deleteFormation = useCallback(async (id: string) => {
     setLoading(true);
     resetError();
     try {
-      const response = await fetch(`/api/scorers/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/formations/${id}`, { method: 'DELETE' });
       const data: ApiResponse<null> = await response.json();
       if (!data.success) {
         setError(data.error || 'Error al eliminar');
         return false;
       }
-      setScorers((prev) => prev.filter((s) => s.id !== id));
+      setFormations((prev) => prev.filter((f) => f.id !== id));
       return true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al conectar');
@@ -83,5 +83,5 @@ export const useScorers = () => {
     }
   }, [resetError]);
 
-  return { scorers, loading, error, fetchScorers, createScorer, updateScorer, deleteScorer };
+  return { formations, loading, error, fetchFormations, createFormation, updateFormation, deleteFormation };
 };

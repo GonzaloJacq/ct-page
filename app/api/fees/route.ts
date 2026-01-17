@@ -1,53 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getFees, createFee } from '@/lib/db/fees';
-import { ApiResponse, Fee, CreateFeeInput } from '@/app/features/fees/types';
+import { Fee, CreateFeeInput } from '@/app/features/fees/types';
+import { apiResponse, apiError } from '@/lib/api-utils';
+import { isMissing, ValidationError } from '@/lib/validation';
 
-export async function GET(): Promise<NextResponse<ApiResponse<Fee[]>>> {
+export async function GET() {
   try {
     const fees = await getFees();
-    return NextResponse.json({ success: true, data: fees });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener cuotas' },
-      { status: 500 }
-    );
+    return apiResponse<Fee[]>(fees);
+  } catch (error) {
+    console.error('GET /api/fees error:', error);
+    return apiError('Error al obtener cuotas', 500);
   }
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<Fee>>> {
+function validateCreateFee(body: CreateFeeInput): void {
+  if (isMissing(body.playerId)) {
+    throw new ValidationError('Selecciona un jugador');
+  }
+
+  if (isMissing(body.month)) {
+    throw new ValidationError('Selecciona un mes');
+  }
+
+  if (body.amount <= 0) {
+    throw new ValidationError('El monto debe ser mayor a 0');
+  }
+}
+
+export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as CreateFeeInput;
 
-    if (!body.playerId) {
-      return NextResponse.json(
-        { success: false, error: 'Selecciona un jugador' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.month) {
-      return NextResponse.json(
-        { success: false, error: 'Selecciona un mes' },
-        { status: 400 }
-      );
-    }
-
-    if (body.amount <= 0) {
-      return NextResponse.json(
-        { success: false, error: 'El monto debe ser mayor a 0' },
-        { status: 400 }
-      );
-    }
+    validateCreateFee(body);
 
     const fee = await createFee(body);
-    return NextResponse.json(
-      { success: true, data: fee },
-      { status: 201 }
-    );
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al crear cuota' },
-      { status: 500 }
-    );
+    return apiResponse<Fee>(fee, 201);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return apiError(error.message, error.statusCode);
+    }
+    console.error('POST /api/fees error:', error);
+    return apiError('Error al crear cuota', 500);
   }
 }

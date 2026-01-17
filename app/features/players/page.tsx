@@ -74,7 +74,7 @@ export default function PlayersPage() {
               setEditingPlayer(null);
               setShowForm(true);
             }}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 cursor-pointer"
           >
             <span>+ Nuevo Jugador</span>
           </button>

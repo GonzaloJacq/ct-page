@@ -6,108 +6,61 @@ import { Player } from "../players/types";
 import { Formation, FormationData, ApiResponse } from "./types";
 import { FormationBuilder } from "./components/FormationBuilder";
 import { FormationsList } from "./components/FormationList";
+import { usePlayer } from "../players/hooks/usePlayer";
+import { useFormations } from "./hooks/useFormations";
 
 export default function FormationsPage() {
   const { data: session } = useSession();
   const isAuthenticated = !!session?.user;
 
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [formations, setFormations] = useState<Formation[]>([]);
+  const { players, fetchPlayers } = usePlayer();
+  const { 
+    formations, 
+    loading: formationsLoading, 
+    error: formationsError, 
+    fetchFormations, 
+    createFormation, 
+    updateFormation, 
+    deleteFormation 
+  } = useFormations();
+
   const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
-  const [loading, setLoading] = useState(true);
   const [showBuilder, setShowBuilder] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // Local error state to combine errors if needed, or just use hook errors
+  const [localError, setLocalError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPlayers();
     fetchFormations();
-  }, []);
+  }, [fetchPlayers, fetchFormations]);
 
-  const fetchPlayers = async () => {
-    try {
-      const response = await fetch("/api/players");
-      const data: ApiResponse<Player[]> = await response.json();
-      
-      if (data.success && data.data) {
-        setPlayers(data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching players:", error);
-      setError("Error al cargar jugadores");
-    }
-  };
-
-  const fetchFormations = async () => {
-    try {
-      const response = await fetch("/api/formations");
-      const data: ApiResponse<Formation[]> = await response.json();
-      
-      if (data.success && data.data) {
-        setFormations(data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching formations:", error);
-      setError("Error al cargar formaciones");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const error = localError || formationsError;
+  const loading = formationsLoading;
 
   const handleSaveFormation = async (name: string, formationData: FormationData) => {
-    try {
-      setError(null);
-      const method = selectedFormation ? "PUT" : "POST";
-      const url = selectedFormation
-        ? `/api/formations/${selectedFormation.id}`
-        : "/api/formations";
+    setLocalError(null);
+    let result;
+    if (selectedFormation) {
+      result = await updateFormation(selectedFormation.id, { name, formationData });
+    } else {
+      result = await createFormation({ name, formationData });
+    }
 
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, formationData }),
-      });
-
-      const data: ApiResponse<Formation> = await response.json();
-
-      if (data.success) {
-        await fetchFormations();
-        setShowBuilder(false);
-        setSelectedFormation(null);
-      } else {
-        setError(data.error || "Error al guardar formación");
-      }
-    } catch (error) {
-      console.error("Error saving formation:", error);
-      setError("Error al guardar formación");
+    if (result) {
+      setShowBuilder(false);
+      setSelectedFormation(null);
     }
   };
 
   const handleEditFormation = (formation: Formation) => {
     setSelectedFormation(formation);
     setShowBuilder(true);
-    setError(null);
+    setLocalError(null);
   };
 
   const handleDeleteFormation = async (id: string) => {
     if (!confirm("¿Estás seguro de eliminar esta formación?")) return;
-
-    try {
-      setError(null);
-      const response = await fetch(`/api/formations/${id}`, {
-        method: "DELETE",
-      });
-
-      const data: ApiResponse<void> = await response.json();
-
-      if (data.success) {
-        await fetchFormations();
-      } else {
-        setError(data.error || "Error al eliminar formación");
-      }
-    } catch (error) {
-      console.error("Error deleting formation:", error);
-      setError("Error al eliminar formación");
-    }
+    await deleteFormation(id);
   };
 
   return (
@@ -125,9 +78,9 @@ export default function FormationsPage() {
             onClick={() => {
               setSelectedFormation(null);
               setShowBuilder(true);
-              setError(null);
+              setLocalError(null);
             }}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 cursor-pointer"
           >
             + Nueva Formación
           </button>
@@ -148,7 +101,7 @@ export default function FormationsPage() {
           onCancel={() => {
             setShowBuilder(false);
             setSelectedFormation(null);
-            setError(null);
+            setLocalError(null);
           }}
         />
       ) : (

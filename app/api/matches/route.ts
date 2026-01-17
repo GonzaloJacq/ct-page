@@ -1,56 +1,46 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getMatches, createMatch } from '@/lib/db/matches';
-import { ApiResponse, Match, CreateMatchInput } from '@/app/features/matches/types';
+import { Match, CreateMatchInput } from '@/app/features/matches/types';
+import { apiResponse, apiError } from '@/lib/api-utils';
+import { isMissing, ValidationError } from '@/lib/validation';
 
-export async function GET(): Promise<NextResponse<ApiResponse<Match[]>>> {
+export async function GET() {
   try {
     const matches = await getMatches();
-    return NextResponse.json({
-      success: true,
-      data: matches,
-    });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener partidos' },
-      { status: 500 }
-    );
+    return apiResponse<Match[]>(matches);
+  } catch (error) {
+    console.error('GET /api/matches error:', error);
+    return apiError('Error al obtener partidos', 500);
   }
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<Match>>> {
+function validateCreateMatch(body: CreateMatchInput): void {
+  if (isMissing(body.opponent)) {
+    throw new ValidationError('El rival es requerido');
+  }
+
+  if (!body.date) {
+    throw new ValidationError('La fecha es requerida');
+  }
+
+  if (!body.playerIds || body.playerIds.length === 0) {
+    throw new ValidationError('Debe seleccionar al menos un jugador');
+  }
+}
+
+export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as CreateMatchInput;
 
-    if (!body.opponent || body.opponent.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: 'El rival es requerido' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.date) {
-      return NextResponse.json(
-        { success: false, error: 'La fecha es requerida' },
-        { status: 400 }
-      );
-    }
-
-    if (!body.playerIds || body.playerIds.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Debe seleccionar al menos un jugador' },
-        { status: 400 }
-      );
-    }
+    validateCreateMatch(body);
 
     const match = await createMatch(body);
-    return NextResponse.json(
-      { success: true, data: match },
-      { status: 201 }
-    );
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al crear partido' },
-      { status: 500 }
-    );
+    return apiResponse<Match>(match, 201);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return apiError(error.message, error.statusCode);
+    }
+    console.error('POST /api/matches error:', error);
+    return apiError('Error al crear partido', 500);
   }
 }

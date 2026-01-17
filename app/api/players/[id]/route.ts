@@ -1,93 +1,79 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { getPlayerById, updatePlayer, deletePlayer } from '@/lib/db/players';
-import { ApiResponse, Player, UpdatePlayerInput } from '@/app/features/players/types';
+import { UpdatePlayerInput } from '@/app/features/players/types';
+import { apiResponse, apiError } from '@/lib/api-utils';
+import { isMissing, isWithinRange, ValidationError } from '@/lib/validation';
 
 export async function GET(
   _: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiResponse<Player>>> {
+) {
   try {
     const { id } = await params;
     const player = await getPlayerById(id);
 
     if (!player) {
-      return NextResponse.json(
-        { success: false, error: 'Jugador no encontrado' },
-        { status: 404 }
-      );
+      return apiError('Jugador no encontrado', 404);
     }
 
-    return NextResponse.json({ success: true, data: player });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al obtener jugador' },
-      { status: 500 }
-    );
+    return apiResponse(player);
+  } catch (error) {
+    console.error('GET /api/players/[id] error:', error);
+    return apiError('Error al obtener jugador', 500);
+  }
+}
+
+function validateUpdatePlayer(body: UpdatePlayerInput): void {
+  if (body.name !== undefined && isMissing(body.name)) {
+    throw new ValidationError('El nombre no puede estar vacío');
+  }
+
+  if (body.age !== undefined && !isWithinRange(body.age, 18, 100)) {
+    throw new ValidationError('La edad debe estar entre 18 y 100');
   }
 }
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiResponse<Player>>> {
+) {
   try {
     const { id } = await params;
     const body = (await request.json()) as UpdatePlayerInput;
 
-    if (body.name !== undefined && body.name.trim() === '') {
-      return NextResponse.json(
-        { success: false, error: 'El nombre no puede estar vacío' },
-        { status: 400 }
-      );
-    }
-
-    if (body.age !== undefined && (body.age < 18 || body.age > 100)) {
-      return NextResponse.json(
-        { success: false, error: 'La edad debe estar entre 18 y 100' },
-        { status: 400 }
-      );
-    }
+    validateUpdatePlayer(body);
 
     const player = await updatePlayer(id, body);
 
     if (!player) {
-      return NextResponse.json(
-        { success: false, error: 'Jugador no encontrado' },
-        { status: 404 }
-      );
+      return apiError('Jugador no encontrado', 404);
     }
 
-    return NextResponse.json({ success: true, data: player });
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al actualizar jugador' },
-      { status: 500 }
-    );
+    return apiResponse(player);
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return apiError(error.message, error.statusCode);
+    }
+    console.error('PUT /api/players/[id] error:', error);
+    return apiError('Error al actualizar jugador', 500);
   }
 }
 
 export async function DELETE(
   _: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse<ApiResponse<null>>> {
+) {
   try {
     const { id } = await params;
     const success = await deletePlayer(id);
 
     if (!success) {
-      return NextResponse.json(
-        { success: false, error: 'Jugador no encontrado' },
-        { status: 404 }
-      );
+      return apiError('Jugador no encontrado', 404);
     }
 
-    return NextResponse.json(
-      { success: true, data: null, message: 'Jugador eliminado' }
-    );
-  } catch {
-    return NextResponse.json(
-      { success: false, error: 'Error al eliminar jugador' },
-      { status: 500 }
-    );
+    return apiResponse(null, 200);
+  } catch (error) {
+    console.error('DELETE /api/players/[id] error:', error);
+    return apiError('Error al eliminar jugador', 500);
   }
 }
