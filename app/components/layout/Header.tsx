@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { Menu, Bell } from 'lucide-react';
+import ColorPicker from './ColorPicker';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -30,6 +31,8 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
         {/* Right: User User & Action */}
         <div className="flex items-center gap-4">
+          <ColorPicker />
+          
           <button className="p-2 text-foreground-muted hover:text-white rounded-lg hover:bg-white/5 relative">
             <Bell className="w-5 h-5" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-background" />

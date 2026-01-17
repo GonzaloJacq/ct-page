@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ThemeProvider from './components/providers/ThemeProvider';
 import SessionWrapper from "./components/SessionWrapper";
 import type { Session } from 'next-auth';
 import { getToken } from 'next-auth/jwt';
@@ -65,13 +66,14 @@ export default async function RootLayout({
 
       // Build a minimal session from detected token so we don't call getServerSession
       if (token) {
-        type TokenPayload = { id?: string; email?: string; name?: string; exp?: number | string; sub?: string };
+        type TokenPayload = { id?: string; email?: string; name?: string; themeColor?: string; exp?: number | string; sub?: string };
         const tok = token as TokenPayload;
         session = {
           user: {
             id: tok.id || tok.sub || '',
             email: tok.email || tok.sub || '',
             name: tok.name || '',
+            themeColor: tok.themeColor,
           },
           expires: tok.exp ? new Date(Number(tok.exp) * 1000).toISOString() : undefined,
         } as Session;

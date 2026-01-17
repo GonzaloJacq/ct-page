@@ -17,7 +17,8 @@ model User {
     password  String   @db.VarChar(255)
     name      String   @db.VarChar(255)
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    updatedAt  DateTime @updatedAt
+    themeColor String?  @db.VarChar(7) // Hex color code
 
     @@index([email])
     @@map("users")

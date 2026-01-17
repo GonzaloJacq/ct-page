@@ -6,7 +6,47 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 if (!process.env.NEXTAUTH_SECRET) {
-  console.warn('NEXTAUTH_SECRET is not defined. This may cause JWT decryption errors. Set NEXTAUTH_SECRET to a secure random string.');
+  console.warn('NEXTAUTH_SECRET is not defined. This may cause JWT decryption errors.');
+}
+
+/**
+ * Custom error class for authentication failures
+ */
+class AuthenticationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'AuthenticationError';
+  }
+}
+
+/**
+ * Validates user credentials against the database
+ */
+async function verifyCredentials(credentials: Record<string, string> | undefined) {
+  if (!credentials?.email || !credentials?.password) {
+    throw new AuthenticationError('Email y contraseña son requeridos');
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { email: credentials.email },
+  });
+
+  if (!user) {
+    throw new AuthenticationError('Usuario no encontrado');
+  }
+
+  const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+  
+  if (!isValidPassword) {
+    throw new AuthenticationError('Contraseña incorrecta');
+  }
+
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    themeColor: user.themeColor || undefined, // Ensure strict compatibility with NextAuth User type
+  };
 }
 
 export const authOptions: NextAuthOptions = {
@@ -17,21 +57,13 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error('Email y contraseña son requeridos');
+      authorize: async (credentials) => {
+        try {
+          return await verifyCredentials(credentials);
+        } catch (error) {
+          // You might want to log the error here structurally
+          throw error; 
         }
-
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
-
-        if (!user) throw new Error('Usuario no encontrado');
-
-        const valid = await bcrypt.compare(credentials.password, user.password);
-        if (!valid) throw new Error('Contraseña incorrecta');
-
-        return { id: user.id, email: user.email, name: user.name };
       },
     }),
   ],
@@ -40,11 +72,17 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.themeColor = user.themeColor;
+      }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) session.user.id = token.id as string;
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.themeColor = token.themeColor as string | undefined;
+      }
       return session;
     },
   },
