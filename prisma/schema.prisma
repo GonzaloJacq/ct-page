@@ -19,6 +19,7 @@ model User {
     createdAt DateTime @default(now())
     updatedAt  DateTime @updatedAt
     themeColor String?  @db.VarChar(7) // Hex color code
+    isAdmin    Boolean  @default(false)
 
     @@index([email])
     @@map("users")

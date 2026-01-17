@@ -7,7 +7,7 @@ interface PlayerListProps {
   onEdit: (player: Player) => void;
   onDelete: (id: string) => void;
   isLoading?: boolean;
-  isAuthenticated?: boolean;
+  isAdmin?: boolean;
 }
 
 export default function PlayerList({
@@ -15,7 +15,7 @@ export default function PlayerList({
   onEdit,
   onDelete,
   isLoading = false,
-  isAuthenticated = false,
+  isAdmin = false,
 }: PlayerListProps) {
   if (players.length === 0) {
     return (
@@ -42,7 +42,7 @@ export default function PlayerList({
             <th className="px-6 py-3 text-left text-xs font-bold text-white font-display uppercase tracking-wider">
               Camiseta
             </th>
-            {isAuthenticated && (
+            {isAdmin && (
               <th className="px-6 py-3 text-left text-xs font-bold text-white font-display uppercase tracking-wider">
                 Acciones
               </th>
@@ -64,7 +64,7 @@ export default function PlayerList({
               <td className="px-6 py-4 text-sm text-foreground-muted font-mono">
                 #{player.shirtNumber}
               </td>
-              {isAuthenticated && (
+              {isAdmin && (
                 <td className="px-6 py-4 text-sm font-medium space-x-2">
                   <button
                     onClick={() => onEdit(player)}

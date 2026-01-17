@@ -9,9 +9,10 @@ import {
   Banknote, 
   TrendingUp,
   LogOut,
-  Shirt
+  Shirt,
+  UserCog
 } from 'lucide-react';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -29,6 +30,13 @@ interface SidebarProps {
 
 export default function Sidebar({ className = '', onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const isAdmin = !!session?.user?.isAdmin;
+
+  const displayNavItems = [...navItems];
+  if (isAdmin) {
+    displayNavItems.push({ name: 'Usuarios', href: '/users', icon: UserCog });
+  }
 
   return (
     <aside className={`flex flex-col h-full bg-background border-r border-white/5 ${className}`}>
@@ -44,7 +52,7 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
+        {displayNavItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link

@@ -7,7 +7,7 @@ interface FeeListProps {
   onEdit: (fee: Fee) => void;
   onDelete: (id: string) => void;
   isLoading?: boolean;
-  isAuthenticated?: boolean;
+  isAdmin?: boolean;
 }
 
 export default function FeeList({
@@ -15,7 +15,7 @@ export default function FeeList({
   onEdit,
   onDelete,
   isLoading = false,
-  isAuthenticated = false,
+  isAdmin = false,
 }: FeeListProps) {
   if (fees.length === 0) {
     return (
@@ -42,7 +42,7 @@ export default function FeeList({
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
               Estado
             </th>
-            {isAuthenticated && (
+            {isAdmin && (
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase">
                 Acciones
               </th>
@@ -72,7 +72,7 @@ export default function FeeList({
                   {fee.paid ? 'Pagado' : 'Pendiente'}
                 </span>
               </td>
-              {isAuthenticated && (
+              {isAdmin && (
                 <td className="px-6 py-4 text-sm font-medium space-x-2">
                   <button
                     onClick={() => onEdit(fee)}

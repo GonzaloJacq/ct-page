@@ -11,7 +11,7 @@ import { useFormations } from "./hooks/useFormations";
 
 export default function FormationsPage() {
   const { data: session } = useSession();
-  const isAuthenticated = !!session?.user;
+  const isAdmin = !!session?.user?.isAdmin;
 
   const { players, fetchPlayers } = usePlayer();
   const { 
@@ -73,7 +73,7 @@ export default function FormationsPage() {
           <p className="text-slate-400 text-sm mt-1">Diseña y guarda las estrategias de juego</p>
         </div>
         
-        {isAuthenticated && !showBuilder && (
+        {isAdmin && !showBuilder && (
           <button
             onClick={() => {
               setSelectedFormation(null);
@@ -109,7 +109,7 @@ export default function FormationsPage() {
           formations={formations}
           players={players}
           loading={loading}
-          isAuthenticated={isAuthenticated}
+          isAdmin={isAdmin}
           onEdit={handleEditFormation}
           onDelete={handleDeleteFormation}
         />

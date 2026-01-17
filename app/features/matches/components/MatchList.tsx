@@ -7,7 +7,7 @@ interface MatchListProps {
   readonly onEdit: (match: Match) => void;
   readonly onDelete: (id: string) => void;
   readonly isLoading?: boolean;
-  readonly isAuthenticated?: boolean;
+  readonly isAdmin?: boolean;
 }
 
 export default function MatchList({
@@ -15,7 +15,7 @@ export default function MatchList({
   onEdit,
   onDelete,
   isLoading = false,
-  isAuthenticated = false,
+  isAdmin = false,
 }: MatchListProps) {
   if (isLoading) {
     return (
@@ -50,7 +50,7 @@ export default function MatchList({
             <th className="px-4 py-3 text-left text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
               Resultado
             </th>
-            {isAuthenticated && (
+            {isAdmin && (
               <th className="px-4 py-3 text-center text-sm font-bold text-white font-display border-b border-white/10 uppercase tracking-wider">
                 Acciones
               </th>
@@ -70,7 +70,7 @@ export default function MatchList({
               <td className="px-4 py-3 text-sm text-foreground-muted">
                 {match.result || '-'}
               </td>
-              {isAuthenticated && (
+              {isAdmin && (
                 <td className="px-4 py-3 text-center">
                   <button
                     onClick={() => onEdit(match)}

@@ -47,6 +47,10 @@ export async function POST(request: NextRequest) {
     if (!session?.user) {
       return apiError('No autorizado', 401);
     }
+    
+    if (!session.user.isAdmin) {
+      return apiError('No tienes permisos de administrador', 403);
+    }
 
     const body = (await request.json()) as CreateFormationInput;
 

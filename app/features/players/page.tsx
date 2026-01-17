@@ -8,7 +8,7 @@ import { Player, CreatePlayerInput } from "./types";
 
 export default function PlayersPage() {
   const { data: session } = useSession();
-  const isAuthenticated = !!session?.user;
+  const isAdmin = !!session?.user?.isAdmin;
   const {
     players,
     loading,
@@ -68,7 +68,7 @@ export default function PlayersPage() {
           <p className="text-slate-400 text-sm mt-1">Administra la plantilla del equipo</p>
         </div>
         
-        {isAuthenticated && !showForm && (
+        {isAdmin && !showForm && (
           <button
             onClick={() => {
               setEditingPlayer(null);
@@ -115,7 +115,7 @@ export default function PlayersPage() {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 isLoading={loading}
-                isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
               />
             )}
           </>

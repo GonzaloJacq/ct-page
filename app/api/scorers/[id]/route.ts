@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/auth';
 import { getScorerById, updateScorer, deleteScorer } from "@/lib/db/scorers";
 import { Scorer, UpdateScorerInput } from "@/app/features/scorers/types";
 import { apiResponse, apiError } from '@/lib/api-utils';
@@ -27,6 +29,11 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
+      return apiError('No tienes permisos de administrador', 403);
+    }
+
     const { id } = await params;
     const body = (await request.json()) as UpdateScorerInput;
 
@@ -48,6 +55,11 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
+      return apiError('No tienes permisos de administrador', 403);
+    }
+
     const { id } = await params;
     const deleted = await deleteScorer(id);
 

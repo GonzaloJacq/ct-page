@@ -11,7 +11,7 @@ import { Match, CreateMatchInput } from './types';
 
 export default function MatchesPage() {
   const { data: session } = useSession();
-  const isAuthenticated = !!session?.user;
+  const isAdmin = !!session?.user?.isAdmin;
   const {
     matches,
     loading,
@@ -79,7 +79,7 @@ export default function MatchesPage() {
           <p className="text-foreground-muted text-sm mt-1">Registra y administra los encuentros</p>
         </div>
         
-        {isAuthenticated && !showForm && (
+        {isAdmin && !showForm && (
           <button
             onClick={() => {
               setEditingMatch(null);
@@ -120,7 +120,7 @@ export default function MatchesPage() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             isLoading={loading}
-            isAuthenticated={isAuthenticated}
+            isAdmin={isAdmin}
           />
         )}
       </div>

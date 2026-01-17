@@ -11,7 +11,7 @@ import { Fee, CreateFeeInput } from "./types";
 
 export default function FeesPage() {
   const { data: session } = useSession();
-  const isAuthenticated = !!session?.user;
+  const isAdmin = !!session?.user?.isAdmin;
   const { fees, loading, error, fetchFees, createFee, updateFee, deleteFee } =
     useFees();
   const { players, fetchPlayers } = usePlayer();
@@ -68,7 +68,7 @@ export default function FeesPage() {
           <p className="text-foreground-muted text-sm mt-1">Control de pagos y mensualidades</p>
         </div>
         
-        {isAuthenticated && !showForm && (
+        {isAdmin && !showForm && (
           <button
             onClick={() => {
               setEditingFee(null);
@@ -116,7 +116,7 @@ export default function FeesPage() {
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 isLoading={loading}
-                isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
               />
             )}
           </>

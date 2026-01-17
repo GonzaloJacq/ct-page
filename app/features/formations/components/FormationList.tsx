@@ -7,7 +7,7 @@ interface FormationsListProps {
   formations: Formation[];
   players: Player[];
   loading: boolean;
-  isAuthenticated: boolean;
+  isAdmin: boolean;
   onEdit: (formation: Formation) => void;
   onDelete: (id: string) => void;
 }
@@ -16,7 +16,7 @@ export function FormationsList({
   formations,
   players,
   loading,
-  isAuthenticated,
+  isAdmin,
   onEdit,
   onDelete,
 }: FormationsListProps) {
@@ -95,7 +95,7 @@ export function FormationsList({
                 {hasDrawings && " • Incluye anotaciones"}
               </p>
 
-              {isAuthenticated && (
+              {isAdmin && (
                 <div className="flex gap-2">
                   <button
                     onClick={() => onEdit(formation)}

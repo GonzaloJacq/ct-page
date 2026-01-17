@@ -45,6 +45,7 @@ async function verifyCredentials(credentials: Record<string, string> | undefined
     id: user.id,
     email: user.email,
     name: user.name,
+    isAdmin: user.isAdmin,
     themeColor: user.themeColor || undefined, // Ensure strict compatibility with NextAuth User type
   };
 }
@@ -74,6 +75,13 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.isAdmin = user.isAdmin;
+        
+        // Hardcoded admin for specific email
+        if (user.email === 'admin@admin.com') {
+          token.isAdmin = true;
+        }
+
         token.themeColor = user.themeColor;
       }
       return token;
@@ -81,6 +89,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.isAdmin = token.isAdmin as boolean;
         session.user.themeColor = token.themeColor as string | undefined;
       }
       return session;

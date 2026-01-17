@@ -12,7 +12,7 @@ import { CreateScorerInput } from "./types";
 
 export default function ScorersPage() {
   const { data: session } = useSession();
-  const isAuthenticated = !!session?.user;
+  const isAdmin = !!session?.user?.isAdmin;
   const { scorers, loading, error, fetchScorers, createScorer } = useScorers();
   const { matches, fetchMatches } = useMatches();
   const { players, fetchPlayers } = usePlayer();
@@ -72,7 +72,7 @@ export default function ScorersPage() {
                 Top Goleadores
               </h1>
             </Link>
-            {isAuthenticated && !showForm && (
+            {isAdmin && !showForm && (
               <button
                 onClick={() => setShowForm(true)}
                 className="btn-primary px-4 py-2 cursor-pointer"

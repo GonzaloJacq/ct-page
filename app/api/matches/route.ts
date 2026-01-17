@@ -1,4 +1,6 @@
 import { NextRequest } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth/auth';
 import { getMatches, createMatch } from '@/lib/db/matches';
 import { Match, CreateMatchInput } from '@/app/features/matches/types';
 import { apiResponse, apiError } from '@/lib/api-utils';
@@ -30,6 +32,10 @@ function validateCreateMatch(body: CreateMatchInput): void {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.isAdmin) {
+      return apiError('No tienes permisos de administrador', 403);
+    }
     const body = (await request.json()) as CreateMatchInput;
 
     validateCreateMatch(body);
