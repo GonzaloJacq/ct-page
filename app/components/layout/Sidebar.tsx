@@ -10,7 +10,8 @@ import {
   TrendingUp,
   LogOut,
   Shirt,
-  UserCog
+  UserCog,
+  Vote
 } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -20,6 +21,7 @@ const navItems = [
   { name: 'Formaciones', href: '/features/formations', icon: Shirt },
   { name: 'Partidos', href: '/features/matches', icon: Trophy },
   { name: 'Goleadores', href: '/features/scorers', icon: TrendingUp },
+  { name: 'Votaciones', href: '/features/votaciones', icon: Vote },
   { name: 'Cuotas', href: '/features/fees', icon: Banknote },
 ];
 
