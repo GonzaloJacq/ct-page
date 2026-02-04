@@ -72,7 +72,8 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/login',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // Cuando el usuario se loguea por primera vez
       if (user) {
         token.id = user.id;
         token.isAdmin = user.isAdmin;
@@ -83,7 +84,23 @@ export const authOptions: NextAuthOptions = {
         }
 
         token.themeColor = user.themeColor;
+        // Establecer tiempo de expiración del token (15 minutos)
+        token.iat = Math.floor(Date.now() / 1000);
+        token.exp = Math.floor(Date.now() / 1000) + (15 * 60);
       }
+
+      // Verificar si el token está próximo a expirar (renovar 2 minutos antes)
+      if (token && typeof token.exp === 'number') {
+        const now = Math.floor(Date.now() / 1000);
+        const timeUntilExpiry = token.exp - now;
+
+        // Si quedan menos de 2 minutos, renovar el token
+        if (timeUntilExpiry < 120) {
+          token.iat = Math.floor(Date.now() / 1000);
+          token.exp = Math.floor(Date.now() / 1000) + (15 * 60);
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
@@ -97,5 +114,10 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
+    maxAge: 15 * 60, // 15 minutos
+    updateAge: 5 * 60, // Renovar sesión cada 5 minutos si hay actividad
+  },
+  jwt: {
+    maxAge: 15 * 60, // 15 minutos
   },
 };

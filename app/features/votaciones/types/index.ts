@@ -21,15 +21,21 @@ export interface VotoMVP extends Voto {
   position?: string;
 }
 
+export interface MatchPlayer {
+  id: string;
+  name: string;
+  position: string;
+  number: number;
+}
+
 export interface MatchWithPlayers {
   id: string;
   title: string;
   date: Date;
   opponent?: string;
-  players: {
-    id: string;
-    name: string;
-    position: string;
-    number: number;
-  }[];
+  players: MatchPlayer[];
+  userVote?: {
+    playerId: string;
+    playerName: string;
+  };
 }

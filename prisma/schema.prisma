@@ -21,6 +21,9 @@ model User {
     themeColor String?  @db.VarChar(7) // Hex color code
     isAdmin    Boolean  @default(false)
 
+    // Relations
+    mvpVotes MVPVote[]
+
     @@index([email])
     @@map("users")
 }
@@ -38,6 +41,7 @@ model Player {
     // Relations
     fees    Fee[]
     scorers Scorer[]
+    mvpVotes MVPVote[]
 
     @@index([name])
     @@map("players")
@@ -76,6 +80,7 @@ model Match {
 
     // Relations
     scorers Scorer[]
+    mvpVotes MVPVote[]
 
     @@index([date])
     @@index([opponent])
@@ -116,4 +121,26 @@ model Formation {
 
     @@index([createdAt])
     @@map("formations")
+}
+
+// MVPVote Model - Votos para MVP por partido y usuario
+model MVPVote {
+    id        String   @id @default(cuid())
+    userId    String
+    matchId   String
+    playerId  String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+    player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+    // Restricción: Un usuario solo puede votar una vez por partido
+    @@unique([userId, matchId])
+    @@index([userId])
+    @@index([matchId])
+    @@index([playerId])
+    @@map("mvp_votes")
 }

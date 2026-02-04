@@ -12,17 +12,24 @@ export async function middleware(request: NextRequest) {
         req: request,
         secret: process.env.NEXTAUTH_SECRET,
       });
+
+      // Verificar si el token está expirado
+      if (token && typeof token.exp === 'number') {
+        const now = Math.floor(Date.now() / 1000);
+        if (token.exp < now) {
+          // Token expirado
+          token = null;
+        }
+      }
     } catch (err: any) {
-      // If getToken fails (e.g. token decryption failure), treat user as unauthenticated
-      // and log the error so it's easier to troubleshoot JWT/secret issues.
+      // Si getToken falla (token corrupto o inválido), tratar como no autenticado
       console.warn('getToken failed:', err);
 
       const msg = err?.message || '';
       const isDecryptionError = msg.includes('decryption operation failed') || msg.includes('JWEDecryptionFailed') || msg.includes('JWT_SESSION_ERROR');
 
-      // If it's a decryption error, clear session cookies (both secure and non-secure names)
+      // Si es error de decryption, limpiar cookies
       if (isDecryptionError) {
-        // If this is an API request, return 401 and clear cookies on the response
         if (pathname.startsWith('/api')) {
           const res = NextResponse.json(
             { success: false, error: 'Invalid session' },
@@ -35,7 +42,7 @@ export async function middleware(request: NextRequest) {
           return res;
         }
 
-        // For page navigations redirect to login and clear cookies
+        // Para navegación de páginas, redirigir a login
         const res = NextResponse.redirect(new URL('/auth/login', request.url));
         try {
           res.cookies.delete('next-auth.session-token');
