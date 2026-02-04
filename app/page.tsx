@@ -8,24 +8,25 @@ import NextMatchSection from "@/app/components/home/NextMatchSection";
 import PhotoGallery from "@/app/components/home/PhotoGallery";
 import { getMatches } from "@/lib/db/matches";
 import { getPlayers } from "@/lib/db/players";
+import type { Match } from "@prisma/client";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
   if (process.env.NEXTAUTH_SECRET && !session) {
-    redirect('/auth/login');
+    redirect("/auth/login");
   }
 
   // Fetch data
-  const [matches, players] = await Promise.all([
-    getMatches(),
-    getPlayers(),
-  ]);
+  const [matches, players] = await Promise.all([getMatches(), getPlayers()]);
 
   // Get next match
-  const nextMatch = matches
-    .filter((m) => new Date(m.date) > new Date())
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0] || null;
+  const nextMatch =
+    (matches
+      .filter((m) => new Date(m.date) > new Date())
+      .sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      )[0] as Match | undefined) ?? null;
 
   return (
     <DashboardLayout>

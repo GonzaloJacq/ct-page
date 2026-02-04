@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Calendar, MapPin, Users } from 'lucide-react';
-import type { Match } from '@prisma/client';
+import { Calendar, MapPin, Users } from "lucide-react";
+import type { Match } from "@prisma/client";
 
 interface NextMatchSectionProps {
   nextMatch?: Match | null;
@@ -25,7 +25,7 @@ export default function NextMatchSection({ nextMatch }: NextMatchSectionProps) {
                 Rival
               </p>
               <p className="text-2xl font-display font-bold text-white uppercase">
-                {nextMatch.opponent || 'Por definir'}
+                {nextMatch.opponent || "Por definir"}
               </p>
             </div>
             <span className="text-4xl font-display text-primary">VS</span>
@@ -43,20 +43,23 @@ export default function NextMatchSection({ nextMatch }: NextMatchSectionProps) {
             <div className="flex items-center gap-3 text-foreground-muted">
               <Calendar className="w-4 h-4 text-primary" />
               <span className="text-sm font-sans">
-                {new Date(nextMatch.date).toLocaleDateString('es-ES', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
+                {new Date(nextMatch.date).toLocaleDateString("es-ES", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
                 })}
               </span>
             </div>
             <div className="flex items-center gap-3 text-foreground-muted">
               <MapPin className="w-4 h-4 text-primary" />
-              <span className="text-sm font-sans">Hora: {new Date(nextMatch.date).toLocaleTimeString('es-ES', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}</span>
+              <span className="text-sm font-sans">
+                Hora:{" "}
+                {new Date(nextMatch.date).toLocaleTimeString("es-ES", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
             </div>
             {nextMatch.playerIds && nextMatch.playerIds.length > 0 && (
               <div className="flex items-center gap-3 text-foreground-muted">

@@ -37,7 +37,7 @@ export default function SessionWrapper({
       session={session}
       refetchInterval={5 * 60} // Revalidar sesión cada 5 minutos (en segundos)
       refetchOnWindowFocus={true} // Revalidar cuando vuelve el foco a la ventana
-      refetchOnReconnect={true} // Revalidar cuando se reconecta a internet
+      refetchWhenOffline={false} // Revalidar cuando se reconecta a internet
     >
       <SessionRefresher />
       {children}
