@@ -11,12 +11,14 @@ import {
   LogOut,
   Shirt,
   UserCog,
-  Vote
+  Vote,
+  BarChart2
 } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 
 const navItems = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Home', href: '/', icon: LayoutDashboard },
+  { name: 'Dashboard', href: '/features/dashboard', icon: BarChart2 },
   { name: 'Jugadores', href: '/features/players', icon: Users },
   { name: 'Formaciones', href: '/features/formations', icon: Shirt },
   { name: 'Partidos', href: '/features/matches', icon: Trophy },
