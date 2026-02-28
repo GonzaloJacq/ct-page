@@ -34,30 +34,46 @@ export const useMatches = () => {
 
   const fetchMatches = useCallback(async () => {
     const data = await request<Match[]>('/api/matches');
-    if (data) setMatches(data);
+    if (data) {
+      // ensure date is a JS Date
+      const normalized = data.map((m) => ({ ...m, date: new Date(m.date) }));
+      setMatches(normalized);
+    }
   }, [request]);
 
   const createMatch = useCallback(async (input: CreateMatchInput) => {
+    // sanitize gallery folder id (extract just ID if full URL provided)
+    const clone = { ...input } as any;
+    if (clone.galleryFolderId && typeof clone.galleryFolderId === 'string') {
+      const match = clone.galleryFolderId.match(/[-\w]{25,}(?=[^\w]|$)/);
+      if (match) clone.galleryFolderId = match[0];
+    }
     const data = await request<Match>('/api/matches', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
+      body: JSON.stringify(clone),
     });
     if (data) {
-      setMatches((prev) => [...prev, data]);
+      setMatches((prev) => [...prev, { ...data, date: new Date(data.date) }]);
       return data;
     }
     return null;
   }, [request]);
 
   const updateMatch = useCallback(async (id: string, input: UpdateMatchInput) => {
+    const clone = { ...input } as any;
+    if (clone.galleryFolderId && typeof clone.galleryFolderId === 'string') {
+      const match = clone.galleryFolderId.match(/[-\w]{25,}(?=[^\w]|$)/);
+      if (match) clone.galleryFolderId = match[0];
+    }
     const data = await request<Match>(`/api/matches/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
+      body: JSON.stringify(clone),
     });
     if (data) {
-      setMatches((prev) => prev.map((m) => (m.id === id ? data : m)));
+      const normalized = { ...data, date: new Date(data.date) };
+      setMatches((prev) => prev.map((m) => (m.id === id ? normalized : m)));
       return data;
     }
     return null;

@@ -35,9 +35,24 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const body = (await request.json()) as UpdateMatchInput;
+    const raw = (await request.json()) as UpdateMatchInput;
+    const body: any = { ...raw };
+    if (body.galleryFolderId && typeof body.galleryFolderId === 'string') {
+      const m = body.galleryFolderId.match(/[-\w]{25,}(?=[^\w]|$)/);
+      if (m) body.galleryFolderId = m[0];
+    }
 
     // Optionally validate similar constraints as creation
+    if (body.galleryFolderId !== undefined && body.galleryFolderId !== null && typeof body.galleryFolderId !== 'string') {
+      return apiError('ID de galería inválido', 400);
+    }
+    if (body.date !== undefined) {
+      const d = new Date(body.date as any);
+      if (isNaN(d.getTime())) {
+        return apiError('Fecha inválida', 400);
+      }
+    }
+
     if (body.ourScorerIds && body.resultNosotros !== undefined) {
       if (body.ourScorerIds.length !== body.resultNosotros) {
         return apiError('La cantidad de goleadores debe coincidir con los goles de nosotros', 400);

@@ -60,7 +60,7 @@ export default async function Home() {
           <NextMatchModal nextMatch={nextMatch} />
         </div>
 
-        {/* Photo Gallery */}
+        {/* Photo Gallery (client) - will fetch /api/matches/latest-gallery */}
         <PhotoGallery />
       </div>
     </DashboardLayout>

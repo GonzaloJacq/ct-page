@@ -135,6 +135,18 @@ export default function MatchList({
                       {match.playerIds && match.playerIds.length > 0 && (
                         <div>Convocados: {match.playerIds.length}</div>
                       )}
+                      {match.galleryFolderId && (
+                        <div>
+                          <a
+                            href={`https://drive.google.com/drive/folders/${match.galleryFolderId}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="underline text-primary"
+                          >
+                            Ver galería
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>

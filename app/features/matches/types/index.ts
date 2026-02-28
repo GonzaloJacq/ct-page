@@ -10,6 +10,7 @@ export interface Match {
   readonly yellowCardPlayerIds: readonly string[];
   readonly redCardPlayerIds: readonly string[];
   readonly playerIds: readonly string[];
+  readonly galleryFolderId?: string | null; // optional drive folder ID for match photos
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }
@@ -20,6 +21,7 @@ export interface CreateMatchInput {
   readonly location?: string | null;
   readonly time?: string | null;
   readonly playerIds: readonly string[];
+  readonly galleryFolderId?: string | null;
   readonly resultNosotros?: number | null;
   readonly resultEllos?: number | null;
   readonly ourScorerIds?: readonly string[];
@@ -33,6 +35,7 @@ export interface UpdateMatchInput {
   readonly location?: string | null;
   readonly time?: string | null;
   readonly playerIds?: readonly string[];
+  readonly galleryFolderId?: string | null;
   readonly resultNosotros?: number | null;
   readonly resultEllos?: number | null;
   readonly ourScorerIds?: readonly string[];

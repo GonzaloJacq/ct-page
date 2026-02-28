@@ -91,6 +91,7 @@ model Match {
     yellowCardPlayerIds   String[] // ids de jugadores amonestados
     redCardPlayerIds      String[] // ids de jugadores expulsados
     playerIds             String[] // Array de IDs de jugadores
+    galleryFolderId       String?  // Google Drive folder ID or similar for photos
     createdAt      DateTime @default(now())
     updatedAt      DateTime @updatedAt
 

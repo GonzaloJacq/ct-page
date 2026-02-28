@@ -49,7 +49,9 @@ export default function MatchesPage() {
   };
 
   const handleEdit = (match: Match) => {
-    setEditingMatch(match);
+    // normalize date so form input shows correctly
+    const normalized = { ...match, date: new Date(match.date) };
+    setEditingMatch(normalized);
     setShowForm(true);
   };
 

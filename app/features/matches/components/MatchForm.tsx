@@ -22,11 +22,13 @@ export default function MatchForm({
   const [formData, setFormData] = useState<CreateMatchInput>(
     initialData
       ? {
-          date: initialData.date,
+          // ensure date is a Date object (API returns ISO string)
+          date: typeof initialData.date === 'string' ? new Date(initialData.date) : initialData.date,
           opponent: initialData.opponent,
           location: initialData.location ?? null,
           time: initialData.time ?? null,
           playerIds: initialData.playerIds,
+          galleryFolderId: initialData.galleryFolderId ?? null,
           resultNosotros: initialData.resultNosotros,
           resultEllos: initialData.resultEllos,
           ourScorerIds: initialData.ourScorerIds ?? [],
@@ -39,6 +41,7 @@ export default function MatchForm({
           location: null,
           time: null,
           playerIds: [],
+          galleryFolderId: null,
           resultNosotros: null,
           resultEllos: null,
           ourScorerIds: [],
@@ -52,6 +55,10 @@ export default function MatchForm({
     let parsed: any = value;
     if (name === 'date') {
       parsed = new Date(value);
+    } else if (name === 'galleryFolderId') {
+      // if user pastes full Drive URL, extract folder ID
+      const match = value.match(/[-\w]{25,}(?=[^\w]|$)/);
+      if (match) parsed = match[0];
     } else if (name === 'resultNosotros' || name === 'resultEllos' || name === 'yellowCards' || name === 'redCards') {
       parsed = value === '' ? null : parseInt(value, 10);
     }
@@ -66,6 +73,9 @@ export default function MatchForm({
         const trimmed = existing.slice(0, count);
         while (trimmed.length < count) trimmed.push('');
         next.ourScorerIds = trimmed;
+      }
+      if (name === 'galleryFolderId') {
+        // nothing special
       }
       if (name === 'yellowCards') {
         const count = parsed ?? 0;
@@ -177,6 +187,20 @@ export default function MatchForm({
             onChange={handleChange}
             className="input-field"
             placeholder="Ej: 19:30"
+          />
+        </div>
+        <div>
+          <label htmlFor="galleryFolderId" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
+            ID carpeta de fotos (Drive)
+          </label>
+          <input
+            type="text"
+            id="galleryFolderId"
+            name="galleryFolderId"
+            value={formData.galleryFolderId ?? ''}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="1a2B3c..."
           />
         </div>
       </div>

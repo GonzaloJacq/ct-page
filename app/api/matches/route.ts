@@ -24,6 +24,13 @@ function validateCreateMatch(body: CreateMatchInput): void {
   if (!body.date) {
     throw new ValidationError('La fecha es requerida');
   }
+  // ensure date is valid
+  if (typeof body.date === 'string') {
+    const d = new Date(body.date);
+    if (isNaN(d.getTime())) {
+      throw new ValidationError('Fecha inválida');
+    }
+  }
 
   if (!body.playerIds || body.playerIds.length === 0) {
     throw new ValidationError('Debe seleccionar al menos un jugador');
@@ -31,6 +38,16 @@ function validateCreateMatch(body: CreateMatchInput): void {
 
   if (body.resultNosotros === undefined || body.resultEllos === undefined) {
     throw new ValidationError('Debes registrar los goles de ambos equipos');
+  }
+
+  if (body.galleryFolderId !== undefined && body.galleryFolderId !== null) {
+    if (typeof body.galleryFolderId !== 'string') {
+      throw new ValidationError('ID de galería inválido');
+    }
+    // simple sanity: typical Drive IDs are 10-60 chars
+    if (body.galleryFolderId.length > 200) {
+      throw new ValidationError('ID de galería demasiado largo');
+    }
   }
 
   if (body.ourScorerIds) {
@@ -76,7 +93,15 @@ export async function POST(request: NextRequest) {
     if (!session?.user?.isAdmin) {
       return apiError('No tienes permisos de administrador', 403);
     }
-    const body = (await request.json()) as CreateMatchInput;
+    const raw = (await request.json()) as CreateMatchInput;
+    // work with a mutable copy since input type is readonly
+    const body: any = { ...raw };
+
+    // normalize galleryFolderId if provided
+    if (body.galleryFolderId && typeof body.galleryFolderId === 'string') {
+      const m = body.galleryFolderId.match(/[-\w]{25,}(?=[^\w]|$)/);
+      if (m) body.galleryFolderId = m[0];
+    }
 
     validateCreateMatch(body);
 
