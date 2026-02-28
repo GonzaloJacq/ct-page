@@ -6,6 +6,7 @@ import {
   createOrUpdateMVPVote,
   getUserMVPVoteForMatch,
 } from "@/lib/db/mvp-votes";
+import { getMatchById } from "@/lib/db/matches";
 
 interface SessionWithId extends Session {
   user: Session["user"] & {
@@ -46,6 +47,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json(
         { error: "User ID not found in session" },
         { status: 400 }
+      );
+    }
+
+    // ensure user is convoked for this match
+    const match = await getMatchById(matchId);
+    if (!match) {
+      return NextResponse.json({ error: 'Match not found' }, { status: 404 });
+    }
+    if (!match.playerIds.includes(userId)) {
+      return NextResponse.json(
+        { error: 'Only convoked players can vote' },
+        { status: 403 }
       );
     }
 

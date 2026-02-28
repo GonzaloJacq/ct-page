@@ -1,6 +1,8 @@
-'use client';
+"use client";
 
-import { Match } from '../types';
+import { useState } from "react";
+import { Match } from "../types";
+import React, { Fragment } from "react";
 
 interface MatchListProps {
   readonly matches: Match[];
@@ -17,6 +19,14 @@ export default function MatchList({
   isLoading = false,
   isAdmin = false,
 }: MatchListProps) {
+  const [expanded, setExpanded] = useState<string[]>([]);
+
+  const toggle = (id: string) => {
+    setExpanded((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="text-center py-8">
@@ -59,34 +69,77 @@ export default function MatchList({
         </thead>
         <tbody>
           {matches.map((match) => (
-            <tr key={match.id} className="border-b border-white/5 hover:bg-white/5 transition">
-              <td className="px-4 py-3 text-sm text-foreground-muted">
-                {new Date(match.date).toLocaleDateString('es-ES')}
-              </td>
-              <td className="px-4 py-3 text-sm text-foreground font-medium">{match.opponent}</td>
-              <td className="px-4 py-3 text-sm text-foreground-muted">
-                {match.playerIds.length} {match.playerIds.length === 1 ? 'jugador' : 'jugadores'}
-              </td>
-              <td className="px-4 py-3 text-sm text-foreground-muted">
-                {match.result || '-'}
-              </td>
-              {isAdmin && (
-                <td className="px-4 py-3 text-center">
-                  <button
-                    onClick={() => onEdit(match)}
-                    className="cursor-pointer px-3 py-1 text-xs bg-primary text-white rounded hover:bg-primary/80 transition mr-2"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => onDelete(match.id)}
-                    className="cursor-pointer px-3 py-1 text-xs bg-red-600/20 text-red-500 border border-red-600/50 rounded hover:bg-red-600/30 transition"
-                  >
-                    Eliminar
-                  </button>
+            <React.Fragment key={match.id}>
+              <tr
+                className="border-b border-white/5 hover:bg-white/5 transition cursor-pointer"
+                onClick={() => toggle(match.id)}
+              >
+                <td className="px-4 py-3 text-sm text-foreground-muted">
+                  {new Date(match.date).toLocaleDateString("es-ES")}
                 </td>
+                <td className="px-4 py-3 text-sm text-foreground font-medium">
+                  {match.opponent}
+                </td>
+                <td className="px-4 py-3 text-sm text-foreground-muted">
+                  {match.playerIds.length}{" "}
+                  {match.playerIds.length === 1 ? "jugador" : "jugadores"}
+                </td>
+                <td className="px-4 py-3 text-sm text-foreground-muted">
+                  {typeof match.resultNosotros === "number" &&
+                  typeof match.resultEllos === "number"
+                    ? `${match.resultNosotros} - ${match.resultEllos}`
+                    : "-"}
+                </td>
+                {isAdmin && (
+                  <td className="px-4 py-3 text-center">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(match);
+                      }}
+                      className="cursor-pointer px-3 py-1 text-xs bg-primary text-white rounded hover:bg-primary/80 transition mr-2"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(match.id);
+                      }}
+                      className="cursor-pointer px-3 py-1 text-xs bg-red-600/20 text-red-500 border border-red-600/50 rounded hover:bg-red-600/30 transition"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                )}
+              </tr>
+              {expanded.includes(match.id) && (
+                <tr className="bg-surface/20">
+                  <td
+                    colSpan={isAdmin ? 5 : 4}
+                    className="px-4 py-3 text-sm text-foreground-muted"
+                  >
+                    <div className="space-y-2">
+                      {match.location && <div>Cancha: {match.location}</div>}
+                      {match.time && <div>Horario: {match.time}</div>}
+                      {match.yellowCardPlayerIds &&
+                        match.yellowCardPlayerIds.length > 0 && (
+                          <div>
+                            Amarillas: {match.yellowCardPlayerIds.length}
+                          </div>
+                        )}
+                      {match.redCardPlayerIds &&
+                        match.redCardPlayerIds.length > 0 && (
+                          <div>Rojas: {match.redCardPlayerIds.length}</div>
+                        )}
+                      {match.playerIds && match.playerIds.length > 0 && (
+                        <div>Convocados: {match.playerIds.length}</div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
               )}
-            </tr>
+            </React.Fragment>
           ))}
         </tbody>
       </table>

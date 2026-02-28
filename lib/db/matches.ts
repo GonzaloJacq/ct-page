@@ -17,13 +17,21 @@ export async function getMatchById(id: string): Promise<Match | null> {
 }
 
 export async function createMatch(input: CreateMatchInput): Promise<Match> {
+  const data: any = {
+    date: input.date,
+    opponent: input.opponent,
+    location: input.location ?? null,
+    time: input.time ?? null,
+    playerIds: Array.from(input.playerIds),
+    resultNosotros: input.resultNosotros ?? null,
+    resultEllos: input.resultEllos ?? null,
+    ourScorerIds: Array.from(input.ourScorerIds ?? []),
+    yellowCardPlayerIds: Array.from(input.yellowCardPlayerIds ?? []),
+    redCardPlayerIds: Array.from(input.redCardPlayerIds ?? []),
+  };
+
   return await prisma.match.create({
-    data: {
-      date: input.date,
-      opponent: input.opponent,
-      playerIds: Array.from(input.playerIds),
-      result: input.result ?? null,
-    },
+    data,
   });
 }
 
@@ -33,7 +41,13 @@ export async function updateMatch(id: string, input: UpdateMatchInput): Promise<
   if (input.date !== undefined) data.date = input.date;
   if (input.opponent !== undefined) data.opponent = input.opponent;
   if (input.playerIds !== undefined) data.playerIds = Array.from(input.playerIds);
-  if ('result' in input) data.result = input.result ?? null;
+  if ('location' in input) data.location = input.location ?? null;
+  if ('time' in input) data.time = input.time ?? null;
+  if ('resultNosotros' in input) data.resultNosotros = input.resultNosotros ?? null;
+  if ('resultEllos' in input) data.resultEllos = input.resultEllos ?? null;
+  if ('ourScorerIds' in input) data.ourScorerIds = Array.from(input.ourScorerIds ?? []);
+  if ('yellowCardPlayerIds' in input) data.yellowCardPlayerIds = Array.from(input.yellowCardPlayerIds ?? []);
+  if ('redCardPlayerIds' in input) data.redCardPlayerIds = Array.from(input.redCardPlayerIds ?? []);
 
   return await prisma.match.update({
     where: { id },

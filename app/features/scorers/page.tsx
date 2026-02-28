@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useScorers } from "./hooks/useScorers";
 import { useMatches } from "@/app/features/matches/hooks/useMatches";
 import { usePlayer } from "@/app/features/players/hooks/usePlayer";
+import CustomSelect from '@/app/components/CustomSelect';
 import { ScorerList } from "./components";
 import { CreateScorerInput } from "./types";
 
@@ -89,7 +90,7 @@ export default function ScorersPage() {
           )}
 
           {showForm && (
-            <div className="mb-8 bg-surface p-6 rounded-lg border border-white/5">
+            <div className="mb-8 !bg-background p-6 rounded-lg border border-white/5">
               <h2 className="text-2xl font-bold text-white mb-4 font-display uppercase tracking-wide">
                 Registrar Gol
               </h2>
@@ -101,21 +102,18 @@ export default function ScorersPage() {
                   >
                     Partido *
                   </label>
-                  <select
-                    id="match"
+                  <CustomSelect
                     value={selectedMatch}
-                    onChange={(e) => setSelectedMatch(e.target.value)}
-                    required
-                    className="input-field"
-                  >
-                    <option value="">Selecciona un partido</option>
-                    {matches.map((match) => (
-                      <option key={match.id} value={match.id}>
-                        {new Date(match.date).toLocaleDateString("es-ES")} -{" "}
-                        {match.opponent}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val: string) => setSelectedMatch(val)}
+                    options={[
+                      { value: '', label: 'Selecciona un partido' },
+                      ...matches.map((match) => ({
+                        value: match.id,
+                        label: `${new Date(match.date).toLocaleDateString("es-ES")} - ${match.opponent}`,
+                      })),
+                    ]}
+                    className="mt-1"
+                  />
                 </div>
 
                 <div>
@@ -125,20 +123,18 @@ export default function ScorersPage() {
                   >
                     Jugador *
                   </label>
-                  <select
-                    id="player"
+                  <CustomSelect
                     value={selectedPlayer}
-                    onChange={(e) => setSelectedPlayer(e.target.value)}
-                    required
-                    className="input-field"
-                  >
-                    <option value="">Selecciona un jugador</option>
-                    {players.map((player) => (
-                      <option key={player.id} value={player.id}>
-                        {player.name} (#{player.shirtNumber})
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val: string) => setSelectedPlayer(val)}
+                    options={[
+                      { value: '', label: 'Selecciona un jugador' },
+                      ...players.map((player) => ({
+                        value: player.id,
+                        label: `${player.name} (#${player.shirtNumber})`,
+                      })),
+                    ]}
+                    className="mt-1"
+                  />
                 </div>
 
                 <div>

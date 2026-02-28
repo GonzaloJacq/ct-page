@@ -20,6 +20,8 @@ export async function GET(request: NextRequest) {
         name: true,
         email: true,
         isAdmin: true,
+        role: true,
+        playerId: true,
         createdAt: true,
       },
     });
@@ -39,15 +41,36 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, isAdmin } = body;
+    const { id, isAdmin, role, playerId } = body;
 
-    if (!id || typeof isAdmin !== 'boolean') {
+    if (!id || typeof id !== 'string') {
       return apiError('Datos inválidos', 400);
+    }
+
+    const data: any = {};
+    // isAdmin may be provided explicitly for toggling
+    if (body.hasOwnProperty('isAdmin')) {
+      if (typeof isAdmin !== 'boolean') {
+        return apiError('Datos inválidos', 400);
+      }
+      data.isAdmin = isAdmin;
+    }
+
+    if (role && ['PLAYER','ASSISTANT','DIRECTOR'].includes(role)) {
+      data.role = role;
+    }
+    if (body.hasOwnProperty('playerId')) {
+      if (playerId === null || playerId === undefined) {
+        // allow clearing association
+        data.playerId = null;
+      } else if (typeof playerId === 'string') {
+        data.playerId = playerId;
+      }
     }
 
     const user = await prisma.user.update({
       where: { id },
-      data: { isAdmin },
+      data,
     });
 
     return apiResponse(user);

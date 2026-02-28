@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Match, CreateMatchInput } from '../types';
+import CustomSelect from '@/app/components/CustomSelect';
 
 interface MatchFormProps {
   onSubmit: (data: CreateMatchInput) => Promise<void>;
@@ -23,27 +24,89 @@ export default function MatchForm({
       ? {
           date: initialData.date,
           opponent: initialData.opponent,
+          location: initialData.location ?? null,
+          time: initialData.time ?? null,
           playerIds: initialData.playerIds,
-          result: initialData.result,
+          resultNosotros: initialData.resultNosotros,
+          resultEllos: initialData.resultEllos,
+          ourScorerIds: initialData.ourScorerIds ?? [],
+          yellowCardPlayerIds: initialData.yellowCardPlayerIds ?? [],
+          redCardPlayerIds: initialData.redCardPlayerIds ?? [],
         }
-      : { date: new Date(), opponent: '', playerIds: [], result: '' }
+      : {
+          date: new Date(),
+          opponent: '',
+          location: null,
+          time: null,
+          playerIds: [],
+          resultNosotros: null,
+          resultEllos: null,
+          ourScorerIds: [],
+          yellowCardPlayerIds: [],
+          redCardPlayerIds: [],
+        }
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'date' ? new Date(value) : value,
-    }));
+    let parsed: any = value;
+    if (name === 'date') {
+      parsed = new Date(value);
+    } else if (name === 'resultNosotros' || name === 'resultEllos' || name === 'yellowCards' || name === 'redCards') {
+      parsed = value === '' ? null : parseInt(value, 10);
+    }
+
+    setFormData((prev) => {
+      const next: any = { ...prev, [name]: parsed };
+
+      if (name === 'resultNosotros') {
+        // adjust ourScorerIds length to match new # of goals
+        const count = parsed ?? 0;
+        const existing = prev.ourScorerIds ? [...prev.ourScorerIds] : [];
+        const trimmed = existing.slice(0, count);
+        while (trimmed.length < count) trimmed.push('');
+        next.ourScorerIds = trimmed;
+      }
+      if (name === 'yellowCards') {
+        const count = parsed ?? 0;
+        const existing = prev.yellowCardPlayerIds ? [...prev.yellowCardPlayerIds] : [];
+        const trimmed = existing.slice(0, count);
+        while (trimmed.length < count) trimmed.push('');
+        next.yellowCardPlayerIds = trimmed;
+      }
+      if (name === 'redCards') {
+        const count = parsed ?? 0;
+        const existing = prev.redCardPlayerIds ? [...prev.redCardPlayerIds] : [];
+        const trimmed = existing.slice(0, count);
+        while (trimmed.length < count) trimmed.push('');
+        next.redCardPlayerIds = trimmed;
+      }
+
+      if (name === 'playerIds') {
+        // handled separately by handlePlayerToggle
+      }
+
+      return next;
+    });
   };
 
   const handlePlayerToggle = (playerId: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      playerIds: prev.playerIds.includes(playerId)
+    setFormData((prev) => {
+      const newPlayerIds = prev.playerIds.includes(playerId)
         ? prev.playerIds.filter((id) => id !== playerId)
-        : [...prev.playerIds, playerId],
-    }));
+        : [...prev.playerIds, playerId];
+      // drop any scorer ids or card ids that are no longer part of the roster
+      const ourScorers = (prev.ourScorerIds || []).filter((id) => newPlayerIds.includes(id));
+      const yellows = (prev.yellowCardPlayerIds || []).filter((id) => newPlayerIds.includes(id));
+      const reds = (prev.redCardPlayerIds || []).filter((id) => newPlayerIds.includes(id));
+      return {
+        ...prev,
+        playerIds: newPlayerIds,
+        ourScorerIds: ourScorers,
+        yellowCardPlayerIds: yellows,
+        redCardPlayerIds: reds,
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,25 +150,198 @@ export default function MatchForm({
           placeholder="Ej: FC Barcelona"
         />
       </div>
-
-      <div>
-        <label htmlFor="result" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
-          Resultado
-        </label>
-        <input
-          type="text"
-          id="result"
-          name="result"
-          value={formData.result || ''}
-          onChange={handleChange}
-          className="input-field"
-          placeholder="Ej: 3-2"
-        />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="location" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
+            Cancha
+          </label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            value={formData.location ?? ''}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="Ej: Estadio Central"
+          />
+        </div>
+        <div>
+          <label htmlFor="time" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
+            Horario
+          </label>
+          <input
+            type="text"
+            id="time"
+            name="time"
+            value={formData.time ?? ''}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="Ej: 19:30"
+          />
+        </div>
       </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="resultNosotros" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
+            Goles Nosotros
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="resultNosotros"
+            name="resultNosotros"
+            value={formData.resultNosotros ?? ''}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="0"
+          />
+        </div>
+        <div>
+          <label htmlFor="resultEllos" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
+            Goles Ellos
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="resultEllos"
+            name="resultEllos"
+            value={formData.resultEllos ?? ''}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="0"
+          />
+        </div>
+      </div>
+      {formData.resultNosotros && formData.resultNosotros > 0 && (
+        <div className="mt-4 space-y-4">
+          <p className="text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">
+            Goleadores (nosotros)
+          </p>
+          {Array.from({ length: formData.resultNosotros }, (_, idx) => (
+            <div key={idx} className="flex items-center gap-2">
+              <label className="text-sm text-foreground-muted">Gol {idx + 1}</label>
+              <CustomSelect
+                value={formData.ourScorerIds?.[idx] ?? ''}
+                onChange={(val) => {
+                  setFormData((prev) => {
+                    const arr = prev.ourScorerIds ? [...prev.ourScorerIds] : [];
+                    arr[idx] = val;
+                    return { ...prev, ourScorerIds: arr };
+                  });
+                }}
+                options={[
+                  { value: '', label: '--' },
+                  ...availablePlayers
+                    .filter((p) => formData.playerIds.includes(p.id))
+                    .map((p) => ({ value: p.id, label: p.name })),
+                ]}
+                className="flex-1"
+              />
+            </div>
+          ))}
+          {formData.ourScorerIds &&
+            (formData.ourScorerIds.length !== formData.resultNosotros ||
+              formData.ourScorerIds.some((id) => !id)) && (
+              <p className="text-error text-sm">Selecciona un goleador válido para cada gol</p>
+            )}
+        </div>
+      )}
+      {/* card counts */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label htmlFor="yellowCards" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
+            Amarillas
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="yellowCards"
+            name="yellowCards"
+            value={formData.yellowCardPlayerIds ? formData.yellowCardPlayerIds.length : ''}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="0"
+          />
+        </div>
+        <div>
+          <label htmlFor="redCards" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
+            Rojas
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="redCards"
+            name="redCards"
+            value={formData.redCardPlayerIds ? formData.redCardPlayerIds.length : ''}
+            onChange={handleChange}
+            className="input-field"
+            placeholder="0"
+          />
+        </div>
+      </div>
+      {formData.yellowCardPlayerIds && formData.yellowCardPlayerIds.length > 0 && (
+        <div className="mt-4 space-y-4">
+          <p className="text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">
+            Jugadores amonestados
+          </p>
+          {formData.yellowCardPlayerIds.map((_, idx) => (
+            <div key={idx} className="flex items-center gap-2">
+              <label className="text-sm text-foreground-muted">A.{idx + 1}</label>
+              <CustomSelect
+                value={formData.yellowCardPlayerIds?.[idx] ?? ''}
+                onChange={(val) => {
+                  setFormData((prev) => {
+                    const arr = prev.yellowCardPlayerIds ? [...prev.yellowCardPlayerIds] : [];
+                    arr[idx] = val;
+                    return { ...prev, yellowCardPlayerIds: arr };
+                  });
+                }}
+                options={[
+                  { value: '', label: '--' },
+                  ...availablePlayers
+                    .filter((p) => formData.playerIds.includes(p.id))
+                    .map((p) => ({ value: p.id, label: p.name })),
+                ]}
+                className="flex-1"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+      {formData.redCardPlayerIds && formData.redCardPlayerIds.length > 0 && (
+        <div className="mt-4 space-y-4">
+          <p className="text-sm font-medium text-foreground-muted mb-2 font-display uppercase tracking-wider">
+            Jugadores expulsados
+          </p>
+          {formData.redCardPlayerIds.map((_, idx) => (
+            <div key={idx} className="flex items-center gap-2">
+              <label className="text-sm text-foreground-muted">R.{idx + 1}</label>
+              <CustomSelect
+                value={formData.redCardPlayerIds?.[idx] ?? ''}
+                onChange={(val) => {
+                  setFormData((prev) => {
+                    const arr = prev.redCardPlayerIds ? [...prev.redCardPlayerIds] : [];
+                    arr[idx] = val;
+                    return { ...prev, redCardPlayerIds: arr };
+                  });
+                }}
+                options={[
+                  { value: '', label: '--' },
+                  ...availablePlayers
+                    .filter((p) => formData.playerIds.includes(p.id))
+                    .map((p) => ({ value: p.id, label: p.name })),
+                ]}
+                className="flex-1"
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-foreground-muted mb-3 font-display uppercase tracking-wider">
-          Jugadores participantes *
+          Jugadores convocados *
         </label>
         <div className="bg-background/50 border border-white/10 rounded-lg p-4 max-h-48 overflow-y-auto space-y-2">
           {availablePlayers.length === 0 ? (
@@ -132,7 +368,16 @@ export default function MatchForm({
       <div className="flex gap-3 pt-4">
         <button
           type="submit"
-          disabled={isLoading || formData.playerIds.length === 0}
+          disabled={
+            isLoading ||
+            formData.playerIds.length === 0 ||
+            (formData.resultNosotros &&
+              (!formData.ourScorerIds ||
+                formData.ourScorerIds.length !== formData.resultNosotros ||
+                formData.ourScorerIds.some((id) => !id))) ||
+            (formData.yellowCardPlayerIds && formData.yellowCardPlayerIds.some((id) => !id)) ||
+            (formData.redCardPlayerIds && formData.redCardPlayerIds.some((id) => !id))
+          }
           className="flex-1 btn-primary"
         >
           {isLoading ? 'Guardando...' : initialData ? 'Actualizar' : 'Crear'}

@@ -4,12 +4,16 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { usePlayer } from '@/app/features/players/hooks/usePlayer';
+import CustomSelect from '@/app/components/CustomSelect';
 
 interface User {
   id: string;
   name: string;
   email: string;
   isAdmin: boolean;
+  role?: string;
+  playerId?: string | null;
   createdAt: string;
 }
 
@@ -19,6 +23,7 @@ export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { players, fetchPlayers } = usePlayer();
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -29,6 +34,7 @@ export default function UsersPage() {
     }
 
     fetchUsers();
+    fetchPlayers();
   }, [session, status, router]);
 
   const fetchUsers = async () => {
@@ -63,6 +69,23 @@ export default function UsersPage() {
     } catch (error) {
       // Revert
       setUsers(users.map(u => u.id === userId ? { ...u, isAdmin: currentStatus } : u));
+      alert('Error al actualizar el usuario');
+    }
+  };
+
+  const updateUser = async (userId: string, updates: Partial<{ role: string; playerId: string | null }>) => {
+    // Optimistic local update
+    setUsers(users.map(u => u.id === userId ? { ...u, ...updates } : u));
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: userId, ...updates }),
+      });
+      if (!res.ok) throw new Error('Update failed');
+    } catch (err) {
+      // refetch or revert
+      fetchUsers();
       alert('Error al actualizar el usuario');
     }
   };
@@ -144,6 +167,29 @@ export default function UsersPage() {
                   <span className="ml-2 text-xs text-foreground-muted">
                     {user.isAdmin ? 'Sí' : 'No'}
                   </span>
+                </td>
+                <td className="px-6 py-4 text-sm">
+                    <CustomSelect
+                    value={user.role || 'PLAYER'}
+                    onChange={(val) => updateUser(user.id, { role: val })}
+                    options={[
+                      { value: 'PLAYER', label: 'Jugador' },
+                      { value: 'ASSISTANT', label: 'Asistente' },
+                      { value: 'DIRECTOR', label: 'Directivo' },
+                    ]}
+                    className="w-full"
+                  />
+                </td>
+                <td className="px-6 py-4 text-sm">
+                    <CustomSelect
+                    value={user.playerId || ''}
+                    onChange={(val) => updateUser(user.id, { playerId: val || null })}
+                    options={[
+                      { value: '', label: '-- Ninguno --' },
+                      ...players.map((p) => ({ value: p.id, label: p.name })),
+                    ]}
+                    className="w-full"
+                  />
                 </td>
               </tr>
             ))}

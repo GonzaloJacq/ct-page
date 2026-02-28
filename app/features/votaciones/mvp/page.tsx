@@ -45,7 +45,13 @@ async function getMatchesWithPlayers(): Promise<MatchWithPlayers[]> {
       ])
     );
 
-    return matches.map((match) => {
+    // if a user is logged in, only show matches where they were convoked
+    let relevantMatches = matches;
+    if (userId) {
+      relevantMatches = matches.filter((m) => m.playerIds.includes(userId));
+    }
+
+    return relevantMatches.map((match) => {
       const userVote = userVotesMap.get(match.id);
       const votedPlayer = userVote ? playersMap.get(userVote.playerId) : null;
 

@@ -12,7 +12,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
   const { data: session } = useSession();
 
   return (
-    <header className="sticky top-0 z-40 h-16 w-full glass-panel border-b-0 border-x-0 border-t-0 border-b border-white/5">
+    <header className="sticky top-0 z-40 h-16 w-full glass-panel border-x-0 border-t-0  border-white/5">
       <div className="flex justify-between items-center h-full px-4 md:px-8">
         {/* Left: Mobile Menu & Current Page */}
         <div className="flex items-center gap-4">

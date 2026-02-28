@@ -28,6 +28,46 @@ function validateCreateMatch(body: CreateMatchInput): void {
   if (!body.playerIds || body.playerIds.length === 0) {
     throw new ValidationError('Debe seleccionar al menos un jugador');
   }
+
+  if (body.resultNosotros === undefined || body.resultEllos === undefined) {
+    throw new ValidationError('Debes registrar los goles de ambos equipos');
+  }
+
+  if (body.ourScorerIds) {
+    if (!Array.isArray(body.ourScorerIds)) {
+      throw new ValidationError('ourScorerIds debe ser un arreglo');
+    }
+    if (body.resultNosotros !== null && body.ourScorerIds.length !== body.resultNosotros) {
+      throw new ValidationError('La cantidad de goleadores debe coincidir con los goles de nosotros');
+    }
+    for (const id of body.ourScorerIds) {
+      if (!body.playerIds.includes(id)) {
+        throw new ValidationError('Los goleadores deben ser jugadores convocados');
+      }
+    }
+  }
+
+  if (body.yellowCardPlayerIds) {
+    if (!Array.isArray(body.yellowCardPlayerIds)) {
+      throw new ValidationError('yellowCardPlayerIds debe ser un arreglo');
+    }
+    for (const id of body.yellowCardPlayerIds) {
+      if (!body.playerIds.includes(id)) {
+        throw new ValidationError('Los amonestados deben ser jugadores convocados');
+      }
+    }
+  }
+
+  if (body.redCardPlayerIds) {
+    if (!Array.isArray(body.redCardPlayerIds)) {
+      throw new ValidationError('redCardPlayerIds debe ser un arreglo');
+    }
+    for (const id of body.redCardPlayerIds) {
+      if (!body.playerIds.includes(id)) {
+        throw new ValidationError('Los expulsados deben ser jugadores convocados');
+      }
+    }
+  }
 }
 
 export async function POST(request: NextRequest) {

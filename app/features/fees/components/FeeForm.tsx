@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Fee, CreateFeeInput } from '../types';
+import CustomSelect from '@/app/components/CustomSelect';
 
 interface FeeFormProps {
   onSubmit: (data: CreateFeeInput) => Promise<void>;
@@ -47,21 +48,19 @@ export default function FeeForm({
         <label htmlFor="playerId" className="block text-sm font-medium text-foreground-muted mb-1 font-display uppercase tracking-wider">
           Jugador *
         </label>
-        <select
-          id="playerId"
-          name="playerId"
+        {/* custom dropdown replaces native select */}
+        <CustomSelect
           value={formData.playerId}
-          onChange={handleChange}
-          required
-          className="input-field"
-        >
-          <option value="">Selecciona un jugador</option>
-          {players.map((player) => (
-            <option key={player.id} value={player.id}>
-              {player.name}
-            </option>
-          ))}
-        </select>
+          onChange={(val) =>
+            setFormData((prev) => ({ ...prev, playerId: val }))
+          }
+          options={[
+            { value: '', label: 'Selecciona un jugador' },
+            ...players.map((p) => ({ value: p.id, label: p.name })),
+          ]}
+          placeholder="Selecciona un jugador"
+          className="mt-1"
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">

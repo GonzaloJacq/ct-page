@@ -11,6 +11,12 @@ datasource db {
 }
 
 // User Model - Gestión de usuarios
+enum Role {
+    PLAYER
+    ASSISTANT
+    DIRECTOR
+}
+
 model User {
     id        String   @id @default(cuid())
     email     String   @unique @db.VarChar(255)
@@ -20,9 +26,12 @@ model User {
     updatedAt  DateTime @updatedAt
     themeColor String?  @db.VarChar(7) // Hex color code
     isAdmin    Boolean  @default(false)
+    role       Role     @default(PLAYER)
+    playerId   String?  @unique // optional association to Player; unique to enforce one-to-one
 
     // Relations
-    mvpVotes MVPVote[]
+    mvpVotes  MVPVote[]
+    player    Player?  @relation(name: "UserPlayer", fields: [playerId], references: [id])
 
     @@index([email])
     @@map("users")
@@ -42,6 +51,7 @@ model Player {
     fees    Fee[]
     scorers Scorer[]
     mvpVotes MVPVote[]
+    user    User?    @relation(name: "UserPlayer")
 
     @@index([name])
     @@map("players")
@@ -70,13 +80,19 @@ model Fee {
 
 // Match Model - Partidos jugados
 model Match {
-    id        String   @id @default(cuid())
-    date      DateTime
-    opponent  String   @db.VarChar(255)
-    result    String?  @db.VarChar(50)
-    playerIds String[] // Array de IDs de jugadores
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id             String   @id @default(cuid())
+    date           DateTime
+    opponent              String   @db.VarChar(255)
+    resultNosotros        Int?     // goles del equipo "nosotros"
+    resultEllos           Int?     // goles del equipo "ellos"
+    ourScorerIds          String[] // ids de jugadores que metieron goles nuestros (puede repetir)
+    location              String?  @db.VarChar(255) // cancha o lugar del partido
+    time                  String?  @db.VarChar(50)  // horario en formato legible
+    yellowCardPlayerIds   String[] // ids de jugadores amonestados
+    redCardPlayerIds      String[] // ids de jugadores expulsados
+    playerIds             String[] // Array de IDs de jugadores
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
 
     // Relations
     scorers Scorer[]

@@ -105,6 +105,20 @@ h6 {
   }
 
   .input-field {
-    @apply bg-surface border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition w-full;
+    /* inputs and selects share look; remove native appearance */
+    @apply bg-surface border border-border rounded-lg px-4 py-3 text-foreground appearance-none focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition w-full;
+  }
+
+  /* dropdown options dark theme */
+  .input-field option {
+    @apply bg-surface text-foreground;
+    background-color: var(--surface) !important;
+    color: var(--foreground) !important;
+  }
+  /* hover/active styles for options (not guaranteed on all browsers) */
+  .input-field option:hover,
+  .input-field option:focus {
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
   }
 }

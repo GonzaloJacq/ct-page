@@ -37,6 +37,34 @@ export async function PUT(
     const { id } = await params;
     const body = (await request.json()) as UpdateMatchInput;
 
+    // Optionally validate similar constraints as creation
+    if (body.ourScorerIds && body.resultNosotros !== undefined) {
+      if (body.ourScorerIds.length !== body.resultNosotros) {
+        return apiError('La cantidad de goleadores debe coincidir con los goles de nosotros', 400);
+      }
+      if (body.playerIds) {
+        for (const sid of body.ourScorerIds) {
+          if (!body.playerIds.includes(sid)) {
+            return apiError('Los goleadores deben ser jugadores convocados', 400);
+          }
+        }
+      }
+    }
+    if (body.yellowCardPlayerIds && body.playerIds) {
+      for (const sid of body.yellowCardPlayerIds) {
+        if (!body.playerIds.includes(sid)) {
+          return apiError('Los amonestados deben ser jugadores convocados', 400);
+        }
+      }
+    }
+    if (body.redCardPlayerIds && body.playerIds) {
+      for (const sid of body.redCardPlayerIds) {
+        if (!body.playerIds.includes(sid)) {
+          return apiError('Los expulsados deben ser jugadores convocados', 400);
+        }
+      }
+    }
+
     const match = await updateMatch(id, body);
 
     if (!match) {
