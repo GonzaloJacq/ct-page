@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/auth';
-import { getScorerById, updateScorer, deleteScorer } from "@/lib/db/scorers";
-import { Scorer, UpdateScorerInput } from "@/app/features/scorers/types";
+import { getEstadisticaById, updateEstadistica, deleteEstadistica } from "@/lib/db/estadisticas";
+import { Estadistica, UpdateEstadisticaInput } from "@/app/features/estadisticas/types";
 import { apiResponse, apiError } from '@/lib/api-utils';
 
 export async function GET(
@@ -11,16 +11,16 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const scorer = await getScorerById(id);
+    const estadistica = await getEstadisticaById(id);
 
-    if (!scorer) {
-      return apiError("Registro de goles no encontrado", 404);
+    if (!estadistica) {
+      return apiError("Estadística no encontrada", 404);
     }
 
-    return apiResponse(scorer);
+    return apiResponse(estadistica);
   } catch (error) {
-    console.error('GET /api/scorers/[id] error:', error);
-    return apiError("Error al obtener registro de goles", 500);
+    console.error('GET /api/estadisticas/[id] error:', error);
+    return apiError("Error al obtener estadística", 500);
   }
 }
 
@@ -35,18 +35,18 @@ export async function PUT(
     }
 
     const { id } = await params;
-    const body = (await request.json()) as UpdateScorerInput;
+    const body = (await request.json()) as UpdateEstadisticaInput;
 
-    const scorer = await updateScorer(id, body);
+    const estadistica = await updateEstadistica(id, body);
 
-    if (!scorer) {
-      return apiError("Registro de goles no encontrado", 404);
+    if (!estadistica) {
+      return apiError("Estadística no encontrada", 404);
     }
 
-    return apiResponse(scorer);
+    return apiResponse(estadistica);
   } catch (error) {
-    console.error('PUT /api/scorers/[id] error:', error);
-    return apiError("Error al actualizar registro de goles", 500);
+    console.error('PUT /api/estadisticas/[id] error:', error);
+    return apiError("Error al actualizar estadística", 500);
   }
 }
 
@@ -61,15 +61,15 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    const deleted = await deleteScorer(id);
+    const deleted = await deleteEstadistica(id);
 
     if (!deleted) {
-      return apiError("Registro de goles no encontrado", 404);
+      return apiError("Estadística no encontrada", 404);
     }
 
     return apiResponse(null, 200);
   } catch (error) {
-    console.error('DELETE /api/scorers/[id] error:', error);
-    return apiError("Error al eliminar registro de goles", 500);
+    console.error('DELETE /api/estadisticas/[id] error:', error);
+    return apiError("Error al eliminar estadística", 500);
   }
 }

@@ -11,6 +11,7 @@ import { getMatchById } from "@/lib/db/matches";
 interface SessionWithId extends Session {
   user: Session["user"] & {
     id: string;
+    playerId?: string | null;
   };
 }
 
@@ -42,6 +43,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const userId = session.user.id;
+    const userPlayerId = session.user.playerId;
 
     if (!userId) {
       return NextResponse.json(
@@ -50,12 +52,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // ensure user is convoked for this match
+    // ensure user is convoked for this match (by player profile)
     const match = await getMatchById(matchId);
     if (!match) {
       return NextResponse.json({ error: 'Match not found' }, { status: 404 });
     }
-    if (!match.playerIds.includes(userId)) {
+
+    const isConvoked =
+      (userPlayerId && match.playerIds.includes(userPlayerId)) ||
+      match.playerIds.includes(userId);
+
+    if (!isConvoked) {
       return NextResponse.json(
         { error: 'Only convoked players can vote' },
         { status: 403 }

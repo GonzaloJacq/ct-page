@@ -1,25 +1,23 @@
-export interface Scorer {
-  readonly id: string;
+export interface Estadistica {
+  readonly playerId: string;
+  readonly playerName: string;
+  readonly totalGoals: number;
+  readonly totalYellowCards: number;
+  readonly totalRedCards: number;
+  readonly totalMatches: number;
+  readonly totalMVPs: number;
+}
+
+export interface CreateEstadisticaInput {
   readonly matchId: string;
   readonly playerId: string;
   readonly playerName: string;
   readonly goalsCount: number;
   readonly matchDate: Date;
   readonly opponent: string;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
 }
 
-export interface CreateScorerInput {
-  readonly matchId: string;
-  readonly playerId: string;
-  readonly playerName: string;
-  readonly goalsCount: number;
-  readonly matchDate: Date;
-  readonly opponent: string;
-}
-
-export interface UpdateScorerInput {
+export interface UpdateEstadisticaInput {
   readonly goalsCount?: number;
 }
 

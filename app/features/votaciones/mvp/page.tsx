@@ -13,6 +13,7 @@ interface SessionWithId {
     id: string;
     email: string;
     name: string;
+    playerId?: string;
   };
 }
 
@@ -20,6 +21,7 @@ async function getMatchesWithPlayers(): Promise<MatchWithPlayers[]> {
   try {
     const session = (await getServerSession(authOptions)) as SessionWithId | null;
     const userId = session?.user?.id;
+    const userPlayerId = session?.user?.playerId;
 
     const [matches, allPlayers, userVotes] = await Promise.all([
       getMatches(),
@@ -45,10 +47,10 @@ async function getMatchesWithPlayers(): Promise<MatchWithPlayers[]> {
       ])
     );
 
-    // if a user is logged in, only show matches where they were convoked
-    let relevantMatches = matches;
-    if (userId) {
-      relevantMatches = matches.filter((m) => m.playerIds.includes(userId));
+    // if a user is logged in, only show matches where their player profile was convoked
+    let relevantMatches: typeof matches = [];
+    if (userPlayerId) {
+      relevantMatches = matches.filter((m) => m.playerIds.includes(userPlayerId));
     }
 
     return relevantMatches.map((match) => {

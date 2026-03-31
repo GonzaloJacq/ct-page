@@ -16,7 +16,11 @@ export async function GET() {
   }
 }
 
-function validateCreateMatch(body: CreateMatchInput): void {
+type MutableMatchInput = {
+  -readonly [K in keyof CreateMatchInput]: CreateMatchInput[K];
+};
+
+function validateCreateMatch(body: MutableMatchInput): void {
   if (isMissing(body.opponent)) {
     throw new ValidationError('El rival es requerido');
   }
@@ -36,8 +40,21 @@ function validateCreateMatch(body: CreateMatchInput): void {
     throw new ValidationError('Debe seleccionar al menos un jugador');
   }
 
-  if (body.resultNosotros === undefined || body.resultEllos === undefined) {
-    throw new ValidationError('Debes registrar los goles de ambos equipos');
+  const hasResult = body.resultNosotros !== undefined && body.resultNosotros !== null && body.resultEllos !== undefined && body.resultEllos !== null;
+
+  if (!hasResult) {
+    // Partido como futuro/próximo: reseteo los datos de marcador y eventos
+    body.resultNosotros = null;
+    body.resultEllos = null;
+    body.ourScorerIds = [];
+    body.yellowCardPlayerIds = [];
+    body.redCardPlayerIds = [];
+  }
+
+  if (hasResult) {
+    if (typeof body.resultNosotros !== 'number' || typeof body.resultEllos !== 'number') {
+      throw new ValidationError('Los goles deben ser numéricos');
+    }
   }
 
   if (body.galleryFolderId !== undefined && body.galleryFolderId !== null) {
@@ -50,11 +67,11 @@ function validateCreateMatch(body: CreateMatchInput): void {
     }
   }
 
-  if (body.ourScorerIds) {
+  if (body.ourScorerIds && hasResult) {
     if (!Array.isArray(body.ourScorerIds)) {
       throw new ValidationError('ourScorerIds debe ser un arreglo');
     }
-    if (body.resultNosotros !== null && body.ourScorerIds.length !== body.resultNosotros) {
+    if (body.ourScorerIds.length !== body.resultNosotros) {
       throw new ValidationError('La cantidad de goleadores debe coincidir con los goles de nosotros');
     }
     for (const id of body.ourScorerIds) {
@@ -64,7 +81,7 @@ function validateCreateMatch(body: CreateMatchInput): void {
     }
   }
 
-  if (body.yellowCardPlayerIds) {
+  if (body.yellowCardPlayerIds && hasResult) {
     if (!Array.isArray(body.yellowCardPlayerIds)) {
       throw new ValidationError('yellowCardPlayerIds debe ser un arreglo');
     }
@@ -75,7 +92,7 @@ function validateCreateMatch(body: CreateMatchInput): void {
     }
   }
 
-  if (body.redCardPlayerIds) {
+  if (body.redCardPlayerIds && hasResult) {
     if (!Array.isArray(body.redCardPlayerIds)) {
       throw new ValidationError('redCardPlayerIds debe ser un arreglo');
     }
@@ -95,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
     const raw = (await request.json()) as CreateMatchInput;
     // work with a mutable copy since input type is readonly
-    const body: any = { ...raw };
+    const body = { ...raw } as any;
 
     // normalize galleryFolderId if provided
     if (body.galleryFolderId && typeof body.galleryFolderId === 'string') {

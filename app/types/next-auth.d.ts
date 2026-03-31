@@ -7,6 +7,7 @@ declare module 'next-auth' {
     name: string;
     isAdmin: boolean;
     role?: string;
+    playerId?: string | null;
     themeColor?: string;
   }
 
@@ -15,6 +16,7 @@ declare module 'next-auth' {
       id: string;
       isAdmin: boolean;
       role?: string;
+      playerId?: string | null;
       themeColor?: string;
     };
   }
@@ -25,6 +27,7 @@ declare module 'next-auth/jwt' {
     id: string;
     isAdmin: boolean;
     role?: string;
+    playerId?: string | null;
     themeColor?: string;
   }
 }

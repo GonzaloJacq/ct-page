@@ -18,11 +18,11 @@ enum Role {
 }
 
 model User {
-    id        String   @id @default(cuid())
-    email     String   @unique @db.VarChar(255)
-    password  String   @db.VarChar(255)
-    name      String   @db.VarChar(255)
-    createdAt DateTime @default(now())
+    id         String   @id @default(cuid())
+    email      String   @unique @db.VarChar(255)
+    password   String   @db.VarChar(255)
+    name       String   @db.VarChar(255)
+    createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
     themeColor String?  @db.VarChar(7) // Hex color code
     isAdmin    Boolean  @default(false)
@@ -30,8 +30,8 @@ model User {
     playerId   String?  @unique // optional association to Player; unique to enforce one-to-one
 
     // Relations
-    mvpVotes  MVPVote[]
-    player    Player?  @relation(name: "UserPlayer", fields: [playerId], references: [id])
+    mvpVotes MVPVote[]
+    player   Player?   @relation(name: "UserPlayer", fields: [playerId], references: [id])
 
     @@index([email])
     @@map("users")
@@ -48,10 +48,10 @@ model Player {
     updatedAt   DateTime @updatedAt
 
     // Relations
-    fees    Fee[]
-    scorers Scorer[]
+    fees     Fee[]
+    scorers  Scorer[]
     mvpVotes MVPVote[]
-    user    User?    @relation(name: "UserPlayer")
+    user     User?     @relation(name: "UserPlayer")
 
     @@index([name])
     @@map("players")
@@ -80,23 +80,23 @@ model Fee {
 
 // Match Model - Partidos jugados
 model Match {
-    id             String   @id @default(cuid())
-    date           DateTime
-    opponent              String   @db.VarChar(255)
-    resultNosotros        Int?     // goles del equipo "nosotros"
-    resultEllos           Int?     // goles del equipo "ellos"
-    ourScorerIds          String[] // ids de jugadores que metieron goles nuestros (puede repetir)
-    location              String?  @db.VarChar(255) // cancha o lugar del partido
-    time                  String?  @db.VarChar(50)  // horario en formato legible
-    yellowCardPlayerIds   String[] // ids de jugadores amonestados
-    redCardPlayerIds      String[] // ids de jugadores expulsados
-    playerIds             String[] // Array de IDs de jugadores
-    galleryFolderId       String?  // Google Drive folder ID or similar for photos
-    createdAt      DateTime @default(now())
-    updatedAt      DateTime @updatedAt
+    id                  String   @id @default(cuid())
+    date                DateTime
+    opponent            String   @db.VarChar(255)
+    resultNosotros      Int? // goles del equipo "nosotros"
+    resultEllos         Int? // goles del equipo "ellos"
+    ourScorerIds        String[] // ids de jugadores que metieron goles nuestros (puede repetir)
+    location            String?  @db.VarChar(255) // cancha o lugar del partido
+    time                String?  @db.VarChar(50) // horario en formato legible
+    yellowCardPlayerIds String[] // ids de jugadores amonestados
+    redCardPlayerIds    String[] // ids de jugadores expulsados
+    playerIds           String[] // Array de IDs de jugadores
+    galleryFolderId     String? // Google Drive folder ID or similar for photos
+    createdAt           DateTime @default(now())
+    updatedAt           DateTime @updatedAt
 
     // Relations
-    scorers Scorer[]
+    scorers  Scorer[]
     mvpVotes MVPVote[]
 
     @@index([date])
@@ -127,12 +127,11 @@ model Scorer {
     @@map("scorers")
 }
 
-
 // Formation Model - Formaciones tácticas
 model Formation {
     id            String   @id @default(cuid())
     name          String   @db.VarChar(100)
-    formationData Json     // {playerId: {x: number, y: number}}
+    formationData Json // {playerId: {x: number, y: number}}
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
 

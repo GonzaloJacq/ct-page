@@ -1,13 +1,17 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { DndContext, DragEndEvent, DragStartEvent, DragOverlay } from "@dnd-kit/core";
+import { useState, useRef, useEffect } from "react";
+import {
+  DndContext,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+} from "@dnd-kit/core";
 import { Player } from "../../players/types";
 import { FormationData, FormationPlayerData, DrawingPath } from "../types";
 import { DraggablePlayer } from "./DragablePlayer";
 import { DroppedPlayer } from "./DroppedPlayer";
 import { DrawingCanvas } from "./DrawingCanvas";
-
 
 interface FormationBuilderProps {
   players: Player[];
@@ -26,18 +30,27 @@ export function FormationBuilder({
   onSave,
   onCancel,
 }: FormationBuilderProps) {
-  const [formationName, setFormationName] = useState(initialFormation?.name || "");
+  const [formationName, setFormationName] = useState(
+    initialFormation?.name || "",
+  );
   const [droppedPlayers, setDroppedPlayers] = useState<FormationPlayerData>(
-    initialFormation?.formationData?.players || {}
+    initialFormation?.formationData?.players || {},
   );
   const [drawings, setDrawings] = useState<DrawingPath[]>(
-    initialFormation?.formationData?.drawings || []
+    initialFormation?.formationData?.drawings || [],
   );
   const [activePlayer, setActivePlayer] = useState<Player | null>(null);
   const [isDrawingMode, setIsDrawingMode] = useState(false);
-  const [drawingTool, setDrawingTool] = useState<'line' | 'arrow' | 'eraser'>('line');
-  const [drawingColor, setDrawingColor] = useState('#FFFFFF');
+  const [drawingTool, setDrawingTool] = useState<"line" | "arrow" | "eraser">(
+    "line",
+  );
+  const [drawingColor, setDrawingColor] = useState("#FFFFFF");
+  const [fieldMounted, setFieldMounted] = useState(false);
   const fieldRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setFieldMounted(!!fieldRef.current);
+  }, []);
 
   const availablePlayers = players.filter((p) => !droppedPlayers[p.id]);
   const playersOnField = players.filter((p) => droppedPlayers[p.id]);
@@ -50,7 +63,7 @@ export function FormationBuilder({
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActivePlayer(null);
-    
+
     if (!fieldRef.current || isDrawingMode) return;
 
     const fieldRect = fieldRef.current.getBoundingClientRect();
@@ -110,28 +123,36 @@ export function FormationBuilder({
       alert("Agrega al menos un jugador a la formación");
       return;
     }
-    
+
     const formationData: FormationData = {
       players: droppedPlayers,
       drawings: drawings.length > 0 ? drawings : undefined,
     };
-    
+
     onSave(formationName, formationData);
   };
 
   const clearDrawings = () => {
-    console.log('Clearing drawings only');
     setDrawings([]);
   };
 
   const clearAll = () => {
-    console.log('clearAll called, players:', Object.keys(droppedPlayers).length, 'drawings:', drawings.length);
-    if (confirm(`¿Estás seguro de borrar TODO? (${Object.keys(droppedPlayers).length} jugadores y ${drawings.length} dibujos)`)) {
-      console.log('User confirmed, clearing everything');
+    console.log(
+      "clearAll called, players:",
+      Object.keys(droppedPlayers).length,
+      "drawings:",
+      drawings.length,
+    );
+    if (
+      confirm(
+        `¿Estás seguro de borrar TODO? (${Object.keys(droppedPlayers).length} jugadores y ${drawings.length} dibujos)`,
+      )
+    ) {
+      console.log("User confirmed, clearing everything");
       setDroppedPlayers({});
       setDrawings([]);
     } else {
-      console.log('User cancelled');
+      console.log("User cancelled");
     }
   };
 
@@ -148,7 +169,9 @@ export function FormationBuilder({
               <DraggablePlayer key={player.id} player={player} />
             ))}
             {availablePlayers.length === 0 && (
-              <p className="text-gray-500 text-sm">No hay jugadores disponibles</p>
+              <p className="text-gray-500 text-sm">
+                No hay jugadores disponibles
+              </p>
             )}
           </div>
         </div>
@@ -182,9 +205,9 @@ export function FormationBuilder({
               <>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setDrawingTool('line')}
+                    onClick={() => setDrawingTool("line")}
                     className={`px-3 py-2 rounded-md transition ${
-                      drawingTool === 'line'
+                      drawingTool === "line"
                         ? "bg-primary text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
@@ -193,9 +216,9 @@ export function FormationBuilder({
                     ━
                   </button>
                   <button
-                    onClick={() => setDrawingTool('arrow')}
+                    onClick={() => setDrawingTool("arrow")}
                     className={`px-3 py-2 rounded-md transition ${
-                      drawingTool === 'arrow'
+                      drawingTool === "arrow"
                         ? "bg-primary text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
@@ -204,9 +227,9 @@ export function FormationBuilder({
                     →
                   </button>
                   <button
-                    onClick={() => setDrawingTool('eraser')}
+                    onClick={() => setDrawingTool("eraser")}
                     className={`px-3 py-2 rounded-md transition ${
-                      drawingTool === 'eraser'
+                      drawingTool === "eraser"
                         ? "bg-primary text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
@@ -231,14 +254,21 @@ export function FormationBuilder({
                     onClick={clearDrawings}
                     className="px-3 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={drawings.length === 0}
-                    title={drawings.length === 0 ? "No hay dibujos para limpiar" : "Limpiar solo los dibujos"}
+                    title={
+                      drawings.length === 0
+                        ? "No hay dibujos para limpiar"
+                        : "Limpiar solo los dibujos"
+                    }
                   >
                     🧹 Limpiar
                   </button>
                   <button
                     onClick={clearAll}
                     className="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={Object.keys(droppedPlayers).length === 0 && drawings.length === 0}
+                    disabled={
+                      Object.keys(droppedPlayers).length === 0 &&
+                      drawings.length === 0
+                    }
                     title="Borrar jugadores y dibujos"
                   >
                     🗑️ Borrar Todo
@@ -269,19 +299,23 @@ export function FormationBuilder({
               <div className="absolute top-0 bottom-0 left-0 w-[2px] bg-white/50" />
               <div className="absolute top-0 bottom-0 right-0 w-[2px] bg-white/50" />
               <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-white/50 -translate-y-1/2" />
-              
+
               {/* Círculo central */}
               <div className="absolute top-1/2 left-1/2 w-24 h-24 border-2 border-white/50 rounded-full -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                <img src="/logo-ct.png" alt="Field Logo" className="w-16 h-16 object-contain opacity-20" />
+                <img
+                  src="/logo-ct.png"
+                  alt="Field Logo"
+                  className="w-16 h-16 object-contain opacity-20"
+                />
               </div>
-              
+
               {/* Áreas */}
               <div className="absolute top-0 left-1/4 right-1/4 h-[15%] border-2 border-white/50 border-t-0" />
               <div className="absolute bottom-0 left-1/4 right-1/4 h-[15%] border-2 border-white/50 border-b-0" />
             </div>
 
             {/* Drawing Canvas - non-interactive, just for display */}
-            {fieldRef.current && (
+            {fieldMounted && fieldRef.current && (
               <DrawingCanvas
                 width={fieldRef.current.offsetWidth}
                 height={fieldRef.current.offsetHeight}
@@ -307,43 +341,43 @@ export function FormationBuilder({
 
             {/* Invisible overlay for drawing - uses lower z-index but pointer-events to not block players */}
             {isDrawingMode && fieldRef.current && (
-              <div 
+              <div
                 className="absolute inset-0 z-10"
-                style={{ 
-                  cursor: drawingTool === 'eraser' ? 'pointer' : 'crosshair',
+                style={{
+                  cursor: drawingTool === "eraser" ? "pointer" : "crosshair",
                   // Only capture pointer events when not dragging
-                  pointerEvents: activePlayer ? 'none' : 'auto'
+                  pointerEvents: activePlayer ? "none" : "auto",
                 }}
                 onMouseDown={(e) => {
                   // Forward event to canvas for drawing
-                  const canvas = fieldRef.current?.querySelector('canvas');
+                  const canvas = fieldRef.current?.querySelector("canvas");
                   if (canvas) {
-                    const mouseEvent = new MouseEvent('mousedown', {
+                    const mouseEvent = new MouseEvent("mousedown", {
                       clientX: e.clientX,
                       clientY: e.clientY,
-                      bubbles: true
+                      bubbles: true,
                     });
                     canvas.dispatchEvent(mouseEvent);
                   }
                 }}
                 onMouseMove={(e) => {
-                  const canvas = fieldRef.current?.querySelector('canvas');
+                  const canvas = fieldRef.current?.querySelector("canvas");
                   if (canvas) {
-                    const mouseEvent = new MouseEvent('mousemove', {
+                    const mouseEvent = new MouseEvent("mousemove", {
                       clientX: e.clientX,
                       clientY: e.clientY,
-                      bubbles: true
+                      bubbles: true,
                     });
                     canvas.dispatchEvent(mouseEvent);
                   }
                 }}
                 onMouseUp={(e) => {
-                  const canvas = fieldRef.current?.querySelector('canvas');
+                  const canvas = fieldRef.current?.querySelector("canvas");
                   if (canvas) {
-                    const mouseEvent = new MouseEvent('mouseup', {
+                    const mouseEvent = new MouseEvent("mouseup", {
                       clientX: e.clientX,
                       clientY: e.clientY,
-                      bubbles: true
+                      bubbles: true,
                     });
                     canvas.dispatchEvent(mouseEvent);
                   }

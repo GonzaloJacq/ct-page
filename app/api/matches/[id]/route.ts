@@ -53,7 +53,13 @@ export async function PUT(
       }
     }
 
-    if (body.ourScorerIds && body.resultNosotros !== undefined) {
+    const hasResult =
+      body.resultNosotros !== undefined &&
+      body.resultNosotros !== null &&
+      body.resultEllos !== undefined &&
+      body.resultEllos !== null;
+
+    if (body.ourScorerIds && hasResult) {
       if (body.ourScorerIds.length !== body.resultNosotros) {
         return apiError('La cantidad de goleadores debe coincidir con los goles de nosotros', 400);
       }
@@ -65,14 +71,14 @@ export async function PUT(
         }
       }
     }
-    if (body.yellowCardPlayerIds && body.playerIds) {
+    if (body.yellowCardPlayerIds && body.playerIds && hasResult) {
       for (const sid of body.yellowCardPlayerIds) {
         if (!body.playerIds.includes(sid)) {
           return apiError('Los amonestados deben ser jugadores convocados', 400);
         }
       }
     }
-    if (body.redCardPlayerIds && body.playerIds) {
+    if (body.redCardPlayerIds && body.playerIds && hasResult) {
       for (const sid of body.redCardPlayerIds) {
         if (!body.playerIds.includes(sid)) {
           return apiError('Los expulsados deben ser jugadores convocados', 400);

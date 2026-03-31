@@ -9,8 +9,13 @@ import NextMatchModal from "@/app/components/home/NextMatchModal";
 import PhotoGallery from "@/app/components/home/PhotoGallery";
 import { getMatches } from "@/lib/db/matches";
 import { getPlayers } from "@/lib/db/players";
-import { getMatchMVPVoteCounts } from "@/lib/db/mvp-votes";
-import type { Match } from "@prisma/client";
+import {
+  getMatchMVPVoteCounts,
+  getUserMVPVoteForMatch,
+  getAllMVPVoteCounts,
+} from "@/lib/db/mvp-votes";
+import MVPVoteNotification from "@/app/components/home/MVPVoteNotification";
+import type { Match, Player } from "@prisma/client";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -35,7 +40,7 @@ export default async function Home() {
       .filter((m) => new Date(m.date).getTime() < now.getTime() - 24 * 60 * 60 * 1000)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] as Match | undefined) ?? null;
 
-  let mvpPlayer = null;
+  let mvpPlayer: Player | null = null;
   if (pastMatch) {
     const voteCounts = await getMatchMVPVoteCounts(pastMatch.id);
     if (voteCounts.length > 0) {
@@ -47,11 +52,51 @@ export default async function Home() {
     }
   }
 
+  if (!mvpPlayer) {
+    const globalVoteCounts = await getAllMVPVoteCounts();
+    if (globalVoteCounts.length > 0) {
+      globalVoteCounts.sort((a, b) => b.voteCount - a.voteCount);
+      const winnerId = globalVoteCounts[0].playerId;
+      const winner = players.find((p) => p.id === winnerId);
+      if (winner) mvpPlayer = winner;
+    }
+  }
+
+  let activeMVPMatch: Match | null = null;
+  if (session?.user?.playerId && session.user.name) {
+    const userPlayerId = session.user.playerId;
+    const lastPlayedMatch =
+      (matches
+        .filter(
+          (m) =>
+            new Date(m.date).getTime() < now.getTime() &&
+            m.playerIds.includes(userPlayerId),
+        )
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] as Match | undefined) ?? null;
+
+    if (lastPlayedMatch) {
+      const voteDeadline = new Date(lastPlayedMatch.date);
+      voteDeadline.setDate(voteDeadline.getDate() + 7); // 7-day voting window
+
+      if (now <= voteDeadline) {
+        const existingVote = await getUserMVPVoteForMatch(
+          session.user.id,
+          lastPlayedMatch.id,
+        );
+        if (!existingVote) {
+          activeMVPMatch = lastPlayedMatch;
+        }
+      }
+    }
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-10">
         {/* Logo Section */}
         <LogoSection />
+
+        {activeMVPMatch && <MVPVoteNotification match={activeMVPMatch} />}
 
         {/* Stats Grid - MVP, Next Match, Gallery */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

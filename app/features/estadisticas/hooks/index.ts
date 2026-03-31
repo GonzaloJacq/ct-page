@@ -1,0 +1,1 @@
+export { useEstadisticas } from './useEstadisticas';

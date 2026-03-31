@@ -96,6 +96,21 @@ export async function getUserMVPVotes(userId: string): Promise<MVPVote[]> {
 }
 
 /**
+ * Obtener conteo total de MVP por jugador
+ */
+export async function getAllMVPVoteCounts(): Promise<MVPVoteCountResult[]> {
+  const votes = await prisma.mVPVote.groupBy({
+    by: ['playerId'],
+    _count: { playerId: true },
+  });
+
+  return votes.map(vote => ({
+    playerId: vote.playerId,
+    voteCount: vote._count.playerId,
+  }));
+}
+
+/**
  * Eliminar un voto de MVP
  */
 export async function deleteMVPVote(

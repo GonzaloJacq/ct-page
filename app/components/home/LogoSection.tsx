@@ -7,7 +7,7 @@ export default function LogoSection() {
   const accentColor = session?.user?.themeColor || '#C2185B';
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8 py-16">
+    <div className="flex flex-col items-center justify-center gap-8">
       {/* Logo rodeado del color seleccionado */}
       <div 
         className="relative w-40 h-40 rounded-full flex items-center justify-center p-1"

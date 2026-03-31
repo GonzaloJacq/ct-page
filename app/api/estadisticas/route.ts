@@ -1,22 +1,22 @@
 import { NextRequest } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth/auth';
-import { getScorers, createScorer } from '@/lib/db/scorers';
-import { Scorer, CreateScorerInput } from '@/app/features/scorers/types';
+import { getEstadisticas, createEstadistica } from '@/lib/db/estadisticas';
+import { Estadistica, CreateEstadisticaInput } from '@/app/features/estadisticas/types';
 import { apiResponse, apiError } from '@/lib/api-utils';
 import { isMissing, ValidationError } from '@/lib/validation';
 
 export async function GET() {
   try {
-    const scorers = await getScorers();
-    return apiResponse<Scorer[]>(scorers);
+    const estadisticas = await getEstadisticas();
+    return apiResponse<Estadistica[]>(estadisticas);
   } catch (error) {
-    console.error('GET /api/scorers error:', error);
-    return apiError('Error al obtener goleadores', 500);
+    console.error('GET /api/estadisticas error:', error);
+    return apiError('Error al obtener estadísticas', 500);
   }
 }
 
-function validateCreateScorer(body: CreateScorerInput): void {
+function validateCreateEstadistica(body: CreateEstadisticaInput): void {
   if (isMissing(body.matchId)) {
     throw new ValidationError('El partido es requerido');
   }
@@ -41,17 +41,17 @@ export async function POST(request: NextRequest) {
       return apiError('No tienes permisos de administrador', 403);
     }
 
-    const body = (await request.json()) as CreateScorerInput;
+    const body = (await request.json()) as CreateEstadisticaInput;
 
-    validateCreateScorer(body);
+    validateCreateEstadistica(body);
 
-    const scorer = await createScorer(body);
-    return apiResponse<Scorer>(scorer, 201);
+    const estadistica = await createEstadistica(body);
+    return apiResponse<Estadistica>(estadistica, 201);
   } catch (error) {
     if (error instanceof ValidationError) {
       return apiError(error.message, error.statusCode);
     }
-    console.error('POST /api/scorers error:', error);
-    return apiError('Error al crear registro de goles', 500);
+    console.error('POST /api/estadisticas error:', error);
+    return apiError('Error al crear registro de estadísticas', 500);
   }
 }

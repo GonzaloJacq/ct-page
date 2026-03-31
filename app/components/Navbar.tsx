@@ -32,8 +32,8 @@ export const Navbar = () => {
             <Link href="/features/matches" className="text-gray-300 hover:text-white transition">
               Partidos
             </Link>
-            <Link href="/features/scorers" className="text-gray-300 hover:text-white transition">
-              Goleadores
+            <Link href="/features/estadisticas" className="text-gray-300 hover:text-white transition">
+              Estadísticas
             </Link>
             <Link href="/features/formations" className="text-gray-300 hover:text-white transition">
               Formaciones
@@ -111,10 +111,10 @@ export const Navbar = () => {
               Partidos
             </Link>
             <Link
-              href="/features/scorers"
+              href="/features/estadisticas"
               className="block px-4 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition"
             >
-              Goleadores
+              Estadísticas
             </Link>
             <Link
               href="/features/formations"

@@ -1,12 +1,14 @@
-import { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 if (!process.env.NEXTAUTH_SECRET) {
-  console.warn('NEXTAUTH_SECRET is not defined. This may cause JWT decryption errors.');
+  console.warn(
+    "NEXTAUTH_SECRET is not defined. This may cause JWT decryption errors.",
+  );
 }
 
 /**
@@ -15,16 +17,18 @@ if (!process.env.NEXTAUTH_SECRET) {
 class AuthenticationError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'AuthenticationError';
+    this.name = "AuthenticationError";
   }
 }
 
 /**
  * Validates user credentials against the database
  */
-async function verifyCredentials(credentials: Record<string, string> | undefined) {
+async function verifyCredentials(
+  credentials: Record<string, string> | undefined,
+) {
   if (!credentials?.email || !credentials?.password) {
-    throw new AuthenticationError('Email y contraseña son requeridos');
+    throw new AuthenticationError("Email y contraseña son requeridos");
   }
 
   const user = await prisma.user.findUnique({
@@ -32,13 +36,16 @@ async function verifyCredentials(credentials: Record<string, string> | undefined
   });
 
   if (!user) {
-    throw new AuthenticationError('Usuario no encontrado');
+    throw new AuthenticationError("Usuario no encontrado");
   }
 
-  const isValidPassword = await bcrypt.compare(credentials.password, user.password);
-  
+  const isValidPassword = await bcrypt.compare(
+    credentials.password,
+    user.password,
+  );
+
   if (!isValidPassword) {
-    throw new AuthenticationError('Contraseña incorrecta');
+    throw new AuthenticationError("Contraseña incorrecta");
   }
 
   return {
@@ -46,6 +53,8 @@ async function verifyCredentials(credentials: Record<string, string> | undefined
     email: user.email,
     name: user.name,
     isAdmin: user.isAdmin,
+    playerId: user.playerId,
+    role: user.role,
     themeColor: user.themeColor || undefined, // Ensure strict compatibility with NextAuth User type
   };
 }
@@ -53,23 +62,23 @@ async function verifyCredentials(credentials: Record<string, string> | undefined
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
         try {
           return await verifyCredentials(credentials);
         } catch (error) {
           // You might want to log the error here structurally
-          throw error; 
+          throw error;
         }
       },
     }),
   ],
   pages: {
-    signIn: '/auth/login',
+    signIn: "/auth/login",
   },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
@@ -77,27 +86,29 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.isAdmin = user.isAdmin;
-        
-        // Hardcoded admin for specific email
-        if (user.email === 'admin@admin.com') {
+        token.role = user.role;
+        token.playerId = user.playerId;
+
+        // Hardcoded admin para email específico
+        if (user.email === "admin@admin.com") {
           token.isAdmin = true;
         }
 
         token.themeColor = user.themeColor;
         // Establecer tiempo de expiración del token (15 minutos)
         token.iat = Math.floor(Date.now() / 1000);
-        token.exp = Math.floor(Date.now() / 1000) + (15 * 60);
+        token.exp = Math.floor(Date.now() / 1000) + 15 * 60;
       }
 
       // Verificar si el token está próximo a expirar (renovar 2 minutos antes)
-      if (token && typeof token.exp === 'number') {
+      if (token && typeof token.exp === "number") {
         const now = Math.floor(Date.now() / 1000);
         const timeUntilExpiry = token.exp - now;
 
         // Si quedan menos de 2 minutos, renovar el token
         if (timeUntilExpiry < 120) {
           token.iat = Math.floor(Date.now() / 1000);
-          token.exp = Math.floor(Date.now() / 1000) + (15 * 60);
+          token.exp = Math.floor(Date.now() / 1000) + 15 * 60;
         }
       }
 
@@ -108,12 +119,14 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.isAdmin = token.isAdmin as boolean;
         session.user.themeColor = token.themeColor as string | undefined;
+        session.user.role = token.role as string | undefined;
+        session.user.playerId = token.playerId as string | null | undefined;
       }
       return session;
     },
   },
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 15 * 60, // 15 minutos
     updateAge: 5 * 60, // Renovar sesión cada 5 minutos si hay actividad
   },

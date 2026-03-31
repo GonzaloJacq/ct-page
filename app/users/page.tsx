@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { usePlayer } from '@/app/features/players/hooks/usePlayer';
-import CustomSelect from '@/app/components/CustomSelect';
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePlayer } from "@/app/features/players/hooks/usePlayer";
+import CustomSelect from "@/app/components/CustomSelect";
 
 interface User {
   id: string;
@@ -26,13 +26,12 @@ export default function UsersPage() {
   const { players, fetchPlayers } = usePlayer();
 
   useEffect(() => {
-    if (status === 'loading') return;
+    if (status === "loading") return;
 
     if (!session?.user?.isAdmin) {
-      router.push('/');
+      router.push("/");
       return;
     }
-
     fetchUsers();
     fetchPlayers();
   }, [session, status, router]);
@@ -40,12 +39,12 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/users');
-      if (!res.ok) throw new Error('Error al cargar usuarios');
+      const res = await fetch("/api/users");
+      if (!res.ok) throw new Error("Error al cargar usuarios");
       const data = await res.json();
       setUsers(data.data || []);
     } catch (err) {
-      setError('No se pudieron cargar los usuarios');
+      setError("No se pudieron cargar los usuarios");
       console.error(err);
     } finally {
       setLoading(false);
@@ -54,43 +53,54 @@ export default function UsersPage() {
 
   const toggleAdmin = async (userId: string, currentStatus: boolean) => {
     // Optimistic update
-    setUsers(users.map(u => u.id === userId ? { ...u, isAdmin: !currentStatus } : u));
+    setUsers(
+      users.map((u) =>
+        u.id === userId ? { ...u, isAdmin: !currentStatus } : u,
+      ),
+    );
 
     try {
-      const res = await fetch('/api/users', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: userId, isAdmin: !currentStatus }),
       });
 
       if (!res.ok) {
-        throw new Error('Error limit');
+        throw new Error("Error limit");
       }
     } catch (error) {
       // Revert
-      setUsers(users.map(u => u.id === userId ? { ...u, isAdmin: currentStatus } : u));
-      alert('Error al actualizar el usuario');
+      setUsers(
+        users.map((u) =>
+          u.id === userId ? { ...u, isAdmin: currentStatus } : u,
+        ),
+      );
+      alert("Error al actualizar el usuario");
     }
   };
 
-  const updateUser = async (userId: string, updates: Partial<{ role: string; playerId: string | null }>) => {
+  const updateUser = async (
+    userId: string,
+    updates: Partial<{ role: string; playerId: string | null }>,
+  ) => {
     // Optimistic local update
-    setUsers(users.map(u => u.id === userId ? { ...u, ...updates } : u));
+    setUsers(users.map((u) => (u.id === userId ? { ...u, ...updates } : u)));
     try {
-      const res = await fetch('/api/users', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/users", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: userId, ...updates }),
       });
-      if (!res.ok) throw new Error('Update failed');
+      if (!res.ok) throw new Error("Update failed");
     } catch (err) {
       // refetch or revert
       fetchUsers();
-      alert('Error al actualizar el usuario');
+      alert("Error al actualizar el usuario");
     }
   };
 
-  if (status === 'loading' || (loading && users.length === 0)) {
+  if (status === "loading" || (loading && users.length === 0)) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -105,12 +115,16 @@ export default function UsersPage() {
       <div className="flex justify-between items-center">
         <div>
           <Link href="/" className="flex items-center gap-3 group mb-2 w-fit">
-            <span className="text-foreground-muted group-hover:text-white transition">← Volver</span>
+            <span className="text-foreground-muted group-hover:text-white transition">
+              ← Volver
+            </span>
           </Link>
           <h1 className="text-3xl font-display text-white">
             GESTIÓN DE USUARIOS
           </h1>
-          <p className="text-foreground-muted text-sm mt-1">Administra accesos y roles</p>
+          <p className="text-foreground-muted text-sm mt-1">
+            Administra accesos y roles
+          </p>
         </div>
       </div>
 
@@ -143,49 +157,53 @@ export default function UsersPage() {
               <tr key={user.id} className="hover:bg-white/5 transition">
                 <td className="px-6 py-4 text-sm font-medium text-foreground">
                   {user.name}
-                  {user.id === session.user.id && <span className="ml-2 text-xs text-primary">(Tú)</span>}
+                  {user.id === session.user.id && (
+                    <span className="ml-2 text-xs text-primary">(Tú)</span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-sm text-foreground-muted">
                   {user.email}
                 </td>
                 <td className="px-6 py-4 text-sm text-foreground-muted">
-                  {new Date(user.createdAt).toLocaleDateString('es-ES')}
+                  {new Date(user.createdAt).toLocaleDateString("es-ES")}
                 </td>
                 <td className="px-6 py-4 text-sm">
                   <button
                     onClick={() => toggleAdmin(user.id, user.isAdmin)}
                     className={`cursor-pointer w-12 h-6 rounded-full p-1 transition-colors duration-200 ease-in-out ${
-                      user.isAdmin ? 'bg-primary' : 'bg-gray-600'
+                      user.isAdmin ? "bg-primary" : "bg-gray-600"
                     }`}
                   >
                     <div
                       className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                        user.isAdmin ? 'translate-x-6' : 'translate-x-0'
+                        user.isAdmin ? "translate-x-6" : "translate-x-0"
                       }`}
                     />
                   </button>
                   <span className="ml-2 text-xs text-foreground-muted">
-                    {user.isAdmin ? 'Sí' : 'No'}
+                    {user.isAdmin ? "Sí" : "No"}
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm">
-                    <CustomSelect
-                    value={user.role || 'PLAYER'}
+                  <CustomSelect
+                    value={user.role || "PLAYER"}
                     onChange={(val) => updateUser(user.id, { role: val })}
                     options={[
-                      { value: 'PLAYER', label: 'Jugador' },
-                      { value: 'ASSISTANT', label: 'Asistente' },
-                      { value: 'DIRECTOR', label: 'Directivo' },
+                      { value: "PLAYER", label: "Jugador" },
+                      { value: "ASSISTANT", label: "Asistente" },
+                      { value: "DIRECTOR", label: "Directivo" },
                     ]}
                     className="w-full"
                   />
                 </td>
                 <td className="px-6 py-4 text-sm">
-                    <CustomSelect
-                    value={user.playerId || ''}
-                    onChange={(val) => updateUser(user.id, { playerId: val || null })}
+                  <CustomSelect
+                    value={user.playerId || ""}
+                    onChange={(val) =>
+                      updateUser(user.id, { playerId: val || null })
+                    }
                     options={[
-                      { value: '', label: '-- Ninguno --' },
+                      { value: "", label: "-- Ninguno --" },
                       ...players.map((p) => ({ value: p.id, label: p.name })),
                     ]}
                     className="w-full"

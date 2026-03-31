@@ -27,6 +27,7 @@ export interface CreateMatchInput {
   readonly ourScorerIds?: readonly string[];
   readonly yellowCardPlayerIds?: readonly string[];
   readonly redCardPlayerIds?: readonly string[];
+  readonly upcoming?: boolean; // true = partido futuro / pendiente de jugar
 }
 
 export interface UpdateMatchInput {

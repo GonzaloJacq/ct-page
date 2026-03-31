@@ -22,7 +22,7 @@ const navItems = [
   { name: 'Jugadores', href: '/features/players', icon: Users },
   { name: 'Formaciones', href: '/features/formations', icon: Shirt },
   { name: 'Partidos', href: '/features/matches', icon: Trophy },
-  { name: 'Goleadores', href: '/features/scorers', icon: TrendingUp },
+  { name: 'Estadísticas', href: '/features/estadisticas', icon: TrendingUp },
   { name: 'Votaciones', href: '/features/votaciones', icon: Vote },
   { name: 'Cuotas', href: '/features/fees', icon: Banknote },
 ];
@@ -37,7 +37,13 @@ export default function Sidebar({ className = '', onClose }: SidebarProps) {
   const { data: session } = useSession();
   const isAdmin = !!session?.user?.isAdmin;
 
-  const displayNavItems = [...navItems];
+  const displayNavItems = navItems.filter(item => {
+    if ((item.name === 'Formaciones' || item.name === 'Dashboard') && !isAdmin) {
+      return false;
+    }
+    return true;
+  });
+
   if (isAdmin) {
     displayNavItems.push({ name: 'Usuarios', href: '/users', icon: UserCog });
   }
